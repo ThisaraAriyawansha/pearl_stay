@@ -78,21 +78,21 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
           <div className="flex items-center space-x-2">
-            <Building2 className="h-8 w-8 text-primary-500" />
+            <Building2 className="w-8 h-8 text-primary-500" />
             <span className="text-xl font-bold text-primary-700">PearlStay</span>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden text-gray-500 hover:text-gray-700"
+            className="text-gray-500 lg:hidden hover:text-gray-700"
           >
-            <X className="h-6 w-6" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
         <div className="p-6">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
-              <span className="text-primary-600 font-medium">
+          <div className="flex items-center mb-6 space-x-3">
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary-100">
+              <span className="font-medium text-primary-600">
                 {user?.name?.charAt(0).toUpperCase()}
               </span>
             </div>
@@ -114,7 +114,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 }`}
                 onClick={() => setSidebarOpen(false)}
               >
-                <item.icon className="h-5 w-5" />
+                <item.icon className="w-5 h-5" />
                 <span>{item.label}</span>
               </Link>
             ))}
@@ -124,9 +124,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-200">
           <button
             onClick={handleLogout}
-            className="flex items-center space-x-3 w-full px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+            className="flex items-center w-full px-3 py-2 space-x-3 text-sm font-medium text-gray-700 transition-colors rounded-md hover:bg-red-50 hover:text-red-600"
           >
-            <LogOut className="h-5 w-5" />
+            <LogOut className="w-5 h-5" />
             <span>Logout</span>
           </button>
         </div>
@@ -135,18 +135,18 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Top bar */}
-        <div className="bg-white shadow-sm border-b border-gray-200 h-16 flex items-center justify-between px-6">
+        <div className="flex items-center justify-between h-16 px-6 bg-white border-b border-gray-200 shadow-sm">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden text-gray-500 hover:text-gray-700"
+            className="text-gray-500 lg:hidden hover:text-gray-700"
           >
-            <Menu className="h-6 w-6" />
+            <Menu className="w-6 h-6" />
           </button>
           
           <div className="flex items-center space-x-4">
             <Link
               to="/"
-              className="text-sm text-gray-600 hover:text-primary-600 transition-colors"
+              className="text-sm text-gray-600 transition-colors hover:text-primary-600"
             >
               ← Back to Website
             </Link>

@@ -30,8 +30,8 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRoles?: strin
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-32 h-32 border-b-2 rounded-full animate-spin border-primary-600"></div>
       </div>
     );
   }
@@ -82,7 +82,6 @@ const AppContent: React.FC = () => {
             path="/dashboard/*" 
             element={
               <ProtectedRoute>
-                <DashboardLayout>
                   <Routes>
                     {/* Admin Routes */}
                     <Route 
@@ -97,8 +96,8 @@ const AppContent: React.FC = () => {
                       path="admin/*" 
                       element={
                         <ProtectedRoute allowedRoles={['admin']}>
-                          <div className="text-center py-8">
-                            <h2 className="text-xl font-semibold text-gray-800 mb-2">Page Under Development</h2>
+                          <div className="py-8 text-center">
+                            <h2 className="mb-2 text-xl font-semibold text-gray-800">Page Under Development</h2>
                             <p className="text-gray-600">This admin feature is coming soon!</p>
                           </div>
                         </ProtectedRoute>
@@ -118,8 +117,8 @@ const AppContent: React.FC = () => {
                       path="owner/*" 
                       element={
                         <ProtectedRoute allowedRoles={['owner']}>
-                          <div className="text-center py-8">
-                            <h2 className="text-xl font-semibold text-gray-800 mb-2">Page Under Development</h2>
+                          <div className="py-8 text-center">
+                            <h2 className="mb-2 text-xl font-semibold text-gray-800">Page Under Development</h2>
                             <p className="text-gray-600">This owner feature is coming soon!</p>
                           </div>
                         </ProtectedRoute>
@@ -139,8 +138,8 @@ const AppContent: React.FC = () => {
                       path="customer/*" 
                       element={
                         <ProtectedRoute allowedRoles={['customer']}>
-                          <div className="text-center py-8">
-                            <h2 className="text-xl font-semibold text-gray-800 mb-2">Page Under Development</h2>
+                          <div className="py-8 text-center">
+                            <h2 className="mb-2 text-xl font-semibold text-gray-800">Page Under Development</h2>
                             <p className="text-gray-600">This customer feature is coming soon!</p>
                           </div>
                         </ProtectedRoute>
@@ -162,7 +161,6 @@ const AppContent: React.FC = () => {
                       } 
                     />
                   </Routes>
-                </DashboardLayout>
               </ProtectedRoute>
             } 
           />
