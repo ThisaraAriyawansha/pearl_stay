@@ -9,6 +9,10 @@ const hotelRoutes = require('./routes/hotelRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 
+const hotelRoutesowner = require('./routes/hotels');
+const roomRoutesowner = require('./routes/rooms');
+const bookingRoutesowner = require('./routes/bookings');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -26,6 +30,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/hotels', hotelRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
+
+app.use('/api/hotels', hotelRoutesowner);
+app.use('/api/rooms', roomRoutesowner);
+app.use('/api/bookings', bookingRoutesowner);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
