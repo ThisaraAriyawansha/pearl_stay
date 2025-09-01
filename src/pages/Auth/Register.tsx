@@ -57,11 +57,11 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background-200 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="flex items-center justify-center min-h-screen px-4 py-12 mt-16 bg-background-200 sm:px-6 lg:px-8" >
+      <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <div className="flex justify-center items-center space-x-2 mb-4">
-            <Building2 className="h-12 w-12 text-primary-500" />
+          <div className="flex items-center justify-center mb-4 space-x-2">
+            <Building2 className="w-12 h-12 text-primary-500" />
             <span className="text-3xl font-bold text-primary-700">PearlStay</span>
           </div>
           <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>
@@ -70,20 +70,20 @@ const Register: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="p-8 bg-white rounded-lg shadow-lg">
           {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-sm">
+            <div className="p-3 mb-4 text-sm text-red-700 bg-red-100 border border-red-400 rounded-md">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="name" className="block mb-1 text-sm font-medium text-gray-700">
                 Full Name
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <User className="absolute w-4 h-4 text-gray-400 left-3 top-3" />
                 <input
                   id="name"
                   name="name"
@@ -91,18 +91,18 @@ const Register: React.FC = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter your full name"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="email" className="block mb-1 text-sm font-medium text-gray-700">
                 Email address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Mail className="absolute w-4 h-4 text-gray-400 left-3 top-3" />
                 <input
                   id="email"
                   name="email"
@@ -110,50 +110,50 @@ const Register: React.FC = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter your email"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="mobile" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="mobile" className="block mb-1 text-sm font-medium text-gray-700">
                 Mobile Number
               </label>
               <div className="relative">
-                <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Phone className="absolute w-4 h-4 text-gray-400 left-3 top-3" />
                 <input
                   id="mobile"
                   name="mobile"
                   type="tel"
                   value={formData.mobile}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter your mobile number"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="nic" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="nic" className="block mb-1 text-sm font-medium text-gray-700">
                 National ID / Passport
               </label>
               <div className="relative">
-                <CreditCard className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <CreditCard className="absolute w-4 h-4 text-gray-400 left-3 top-3" />
                 <input
                   id="nic"
                   name="nic"
                   type="text"
                   value={formData.nic}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter your ID number"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="role" className="block mb-1 text-sm font-medium text-gray-700">
                 Account Type
               </label>
               <select
@@ -169,11 +169,11 @@ const Register: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="password" className="block mb-1 text-sm font-medium text-gray-700">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Lock className="absolute w-4 h-4 text-gray-400 left-3 top-3" />
                 <input
                   id="password"
                   name="password"
@@ -181,25 +181,25 @@ const Register: React.FC = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Create a password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                  className="absolute text-gray-400 right-3 top-3 hover:text-gray-600"
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="confirmPassword" className="block mb-1 text-sm font-medium text-gray-700">
                 Confirm Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Lock className="absolute w-4 h-4 text-gray-400 left-3 top-3" />
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
@@ -207,15 +207,15 @@ const Register: React.FC = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
-                  className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Confirm your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                  className="absolute text-gray-400 right-3 top-3 hover:text-gray-600"
                 >
-                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
@@ -223,7 +223,7 @@ const Register: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary-600 text-white py-2 px-4 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              className="w-full px-4 py-2 font-medium text-white transition-colors rounded-md bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Creating account...' : 'Create account'}
             </button>
@@ -234,7 +234,7 @@ const Register: React.FC = () => {
               Already have an account?{' '}
               <Link
                 to="/login"
-                className="text-primary-600 hover:text-primary-500 font-medium transition-colors"
+                className="font-medium transition-colors text-primary-600 hover:text-primary-500"
               >
                 Sign in →
               </Link>

@@ -123,14 +123,7 @@ const Login: React.FC = () => {
           </div>
 
           {/* Demo Accounts */}
-          <div className="p-4 mt-6 rounded-md bg-background-100">
-            <p className="mb-2 text-sm font-medium text-gray-700">Demo Accounts:</p>
-            <div className="space-y-1 text-xs text-gray-600">
-              <p><strong>Admin:</strong> admin@pearlstay.com / admin123</p>
-              <p><strong>Owner:</strong> owner@pearlstay.com / owner123</p>
-              <p><strong>Customer:</strong> customer@pearlstay.com / customer123</p>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

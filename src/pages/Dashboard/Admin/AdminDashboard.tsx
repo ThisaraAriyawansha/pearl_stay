@@ -149,7 +149,7 @@ const AdminDashboard: React.FC = () => {
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}
       >
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
+        <div className="flex items-center justify-between h-16 px-4 border-b border-white">
           <div className="flex items-center space-x-2">
             <Building2 className="w-8 h-8 text-blue-600" />
             <span className="text-xl font-semibold text-gray-800">PearlStay</span>
@@ -215,7 +215,7 @@ const AdminDashboard: React.FC = () => {
 
       {/* Main content */}
       <div className="flex-1 min-h-screen">
-        <header className="flex items-center justify-between h-16 px-4 bg-white border-b border-gray-200 shadow-sm lg:px-6">
+        <header className="flex items-center justify-between h-16 px-4 bg-white border-b border-white shadow-sm lg:px-6">
           <button
             onClick={() => setSidebarOpen(true)}
             className="text-gray-600 lg:hidden hover:text-gray-800"
@@ -226,7 +226,7 @@ const AdminDashboard: React.FC = () => {
             to="/"
             className="text-sm font-medium text-gray-600 transition-colors hover:text-blue-600"
           >
-            Back to Website
+            ← Back to Website
           </Link>
         </header>
 
