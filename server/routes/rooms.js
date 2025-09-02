@@ -7,7 +7,7 @@ const fs = require('fs').promises;
 const multer = require('multer');
 
 // Configure multer for file uploads
-const uploadDir = path.join(__dirname, '..', 'Uploads');
+const uploadDir = path.join(__dirname, '..', 'RoomUploads');
 fs.mkdir(uploadDir, { recursive: true }).catch(console.error);
 
 const storage = multer.diskStorage({
@@ -19,6 +19,8 @@ const storage = multer.diskStorage({
     cb(null, `${uniqueSuffix}-${file.originalname}`);
   },
 });
+
+
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
@@ -137,7 +139,7 @@ router.post('/', authenticateToken, authorizeRoles('owner'), (req, res, next) =>
     const images = [];
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
-        const imagePath = `/Uploads/${file.filename}`;
+        const imagePath = `/RoomUploads/${file.filename}`;
         const [imageResult] = await db.execute(
           'INSERT INTO room_images (room_id, image) VALUES (?, ?)',
           [result.insertId, imagePath]
@@ -220,7 +222,7 @@ router.put('/:id', authenticateToken, authorizeRoles('owner'), (req, res, next) 
       await db.execute('DELETE FROM room_images WHERE room_id = ?', [req.params.id]);
 
       for (const file of req.files) {
-        const imagePath = `/Uploads/${file.filename}`;
+        const imagePath = `/RoomUploads/${file.filename}`;
         await db.execute(
           'INSERT INTO room_images (room_id, image) VALUES (?, ?)',
           [req.params.id, imagePath]

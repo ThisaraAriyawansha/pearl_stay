@@ -23,7 +23,7 @@ interface RoomCardProps {
 
 const RoomCard: React.FC<RoomCardProps> = ({ room, className = '' }) => {
   const imageUrl = room.images && room.images.length > 0 && room.images[0]
-    ? `http://localhost:5000/uploads/${room.images[0]}`
+    ? `http://localhost:5000${room.images[0]}`
     : 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800';
 
   return (
@@ -32,40 +32,40 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, className = '' }) => {
         <img
           src={imageUrl}
           alt={room.name}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
         />
-        <div className="absolute top-4 right-4 bg-primary-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+        <div className="absolute px-3 py-1 text-sm font-medium text-white rounded-full top-4 right-4 bg-primary-600">
           ${room.price_per_night}/night
         </div>
       </div>
 
       <div className="p-4">
         <div className="mb-2">
-          <h3 className="text-lg font-semibold text-gray-800 mb-1">{room.name}</h3>
+          <h3 className="mb-1 text-lg font-semibold text-gray-800">{room.name}</h3>
           <Link 
             to={`/hotels/${room.hotel_id}`}
-            className="text-primary-600 hover:text-primary-700 text-sm font-medium transition-colors"
+            className="text-sm font-medium transition-colors text-primary-600 hover:text-primary-700"
           >
             {room.hotel_name}
           </Link>
-          <p className="text-gray-500 text-xs">{room.hotel_location}</p>
+          <p className="text-xs text-gray-500">{room.hotel_location}</p>
         </div>
 
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+        <p className="mb-4 text-sm text-gray-600 line-clamp-2">
           {room.description}
         </p>
 
         <div className="grid grid-cols-3 gap-4 mb-4 text-sm text-gray-600">
           <div className="flex items-center space-x-1">
-            <Square className="h-4 w-4" />
+            <Square className="w-4 h-4" />
             <span>{room.size}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <Bed className="h-4 w-4" />
+            <Bed className="w-4 h-4" />
             <span>{room.bed_type}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <Users className="h-4 w-4" />
+            <Users className="w-4 h-4" />
             <span>+${room.adult_price}/adult</span>
           </div>
         </div>
@@ -77,9 +77,9 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, className = '' }) => {
           
           <Link
             to={`/rooms/${room.id}`}
-            className="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors flex items-center space-x-2"
+            className="flex items-center px-4 py-2 space-x-2 text-sm font-medium text-white transition-colors rounded-md bg-primary-600 hover:bg-primary-700"
           >
-            <Calendar className="h-4 w-4" />
+            <Calendar className="w-4 h-4" />
             <span>Book Now</span>
           </Link>
         </div>

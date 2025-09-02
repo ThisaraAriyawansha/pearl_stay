@@ -578,7 +578,7 @@ const OwnerDashboard = () => {
                     <div className="relative w-full h-40 mb-4">
                       {room.images && room.images.length > 0 ? (
                         <img
-                          src={`http://localhost:5000${room.images[0].image}`}
+                          src={`http://localhost:5000/${room.images[0].image}`}
                           alt={room.name}
                           className="object-cover w-full h-full rounded-lg"
                         />
