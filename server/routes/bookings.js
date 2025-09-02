@@ -3,22 +3,25 @@ const router = express.Router();
 const db = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
 
-// Get bookings for a specific hotel
 router.get('/hotel/:hotelId', authenticateToken, async (req, res) => {
   try {
     const [bookings] = await db.execute(
-      `SELECT b.*, r.name as room_name, u.name as customer_name, u.email as customer_email 
+      `SELECT b.*, r.name as room_name, h.name as hotel_name, u.name as customer_name, u.email as customer_email 
        FROM bookings b 
        JOIN rooms r ON b.room_id = r.id 
+       JOIN hotels h ON r.hotel_id = h.id
        JOIN users u ON b.user_id = u.id 
        WHERE r.hotel_id = ? 
        ORDER BY b.created_at DESC`,
       [req.params.hotelId]
     );
-
-    res.json({ bookings });
+    res.json({ bookings: bookings || [] });
   } catch (error) {
-    console.error('Error fetching bookings:', error);
+    console.error('Error fetching bookings:', {
+      error: error.message,
+      stack: error.stack,
+      hotelId: req.params.hotelId,
+    });
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -94,5 +97,36 @@ router.put('/:id/status', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
+// Update booking status
+router.put('/:bookingId', authenticateToken, async (req, res) => {
+  const { bookingId } = req.params;
+  const { booking_status } = req.body;
+
+  if (!['pending', 'confirmed', 'cancelled'].includes(booking_status)) {
+    return res.status(400).json({ error: 'Invalid booking status' });
+  }
+
+  try {
+    const [bookings] = await db.execute('SELECT * FROM bookings WHERE id = ?', [bookingId]);
+
+    if (bookings.length === 0) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+
+    await db.execute('UPDATE bookings SET booking_status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [
+      booking_status,
+      bookingId,
+    ]);
+
+    res.json({ message: 'Booking status updated successfully' });
+  } catch (error) {
+    console.error('Error updating booking status:', error);
+    res.status(500).json({ error: 'Failed to update booking status' });
+  }
+});
+
+
 
 module.exports = router;

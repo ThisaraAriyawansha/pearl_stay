@@ -29,6 +29,10 @@ interface Booking {
   customer_name: string;
   check_in: string;
   check_out: string;
+  room_count: number;
+  adult_count: number;
+  special_note: string | null;
+  hotel_name: string;
 }
 
 interface Hotel {
@@ -55,6 +59,14 @@ interface Room {
   images: { id: number; image: string }[];
 }
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  mobile: string | null;
+  nic: string | null;
+}
+
 const OwnerDashboard = () => {
   const [stats, setStats] = useState({
     totalHotels: 0,
@@ -66,13 +78,15 @@ const OwnerDashboard = () => {
   const [recentBookings, setRecentBookings] = useState<Booking[]>([]);
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [userDetails, setUserDetails] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentView, setCurrentView] = useState<DashboardView>('dashboard');
   const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [selectedHotelForRooms, setSelectedHotelForRooms] = useState<string>('');
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const navigate = useNavigate();
 
   // State for alerts
@@ -110,8 +124,19 @@ const OwnerDashboard = () => {
     images: [],
   });
 
+  // State for user settings form
+  const [userForm, setUserForm] = useState({
+    name: '',
+    email: '',
+    mobile: '',
+    nic: '',
+    password: '',
+    confirmPassword: '',
+  });
+
   useEffect(() => {
     fetchDashboardData();
+    fetchUserDetails();
   }, []);
 
   const fetchDashboardData = async () => {
@@ -130,10 +155,14 @@ const OwnerDashboard = () => {
 
       for (const hotel of hotels) {
         try {
-          const roomsRes = await axios.get(`http://localhost:5000/api/roomsmanage/hotel/${hotel.id}`);
+          const roomsRes = await axios.get(`http://localhost:5000/api/roomsmanage/hotel/${hotel.id}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          });
           totalRooms += roomsRes.data.rooms.length;
 
-          const bookingsRes = await axios.get(`http://localhost:5000/api/bookings/hotel/${hotel.id}`);
+          const bookingsRes = await axios.get(`http://localhost:5000/api/bookingsManage/hotel/${hotel.id}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          });
           const hotelBookings: Booking[] = bookingsRes.data.bookings;
 
           totalBookings += hotelBookings.length;
@@ -161,6 +190,8 @@ const OwnerDashboard = () => {
           .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
           .slice(0, 5)
       );
+
+      setBookings(allBookings);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       setAlert({ type: 'error', message: 'Failed to load dashboard data', visible: true });
@@ -169,16 +200,126 @@ const OwnerDashboard = () => {
     }
   };
 
+  const fetchUserDetails = async () => {
+  if (!user?.id) return; // prevent call if user is not loaded yet
+
+  try {
+    const response = await axios.get(
+      `http://localhost:5000/api/userManage/me/${user.id}`,
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      }
+    );
+
+    setUserDetails(response.data.user);
+    setUserForm({
+      name: response.data.user.name,
+      email: response.data.user.email,
+      mobile: response.data.user.mobile || '',
+      nic: response.data.user.nic || '',
+      password: '',
+      confirmPassword: '',
+    });
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    setAlert({
+      type: 'error',
+      message: 'Failed to load user details',
+      visible: true,
+    });
+  }
+};
+
+
   const fetchRooms = async (hotelId: string) => {
     try {
       setSelectedHotelForRooms(hotelId);
-      const response = await axios.get(`http://localhost:5000/api/roomsmanage/hotel/${hotelId}`);
+      const response = await axios.get(`http://localhost:5000/api/roomsmanage/hotel/${hotelId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
       setRooms(response.data.rooms);
     } catch (error) {
       console.error('Error fetching rooms:', error);
       setAlert({ type: 'error', message: 'Failed to load rooms', visible: true });
     }
   };
+
+  const handleUpdateBookingStatus = async (bookingId: number, newStatus: string) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/bookingsManage/${bookingId}`,
+        { booking_status: newStatus },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+      );
+      setAlert({ type: 'success', message: response.data.message, visible: true });
+      await fetchDashboardData();
+      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 3000);
+    } catch (error: any) {
+      setAlert({
+        type: 'error',
+        message: error.response?.data?.error || 'Failed to update booking status',
+        visible: true,
+      });
+      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 3000);
+    }
+  };
+
+  const handleUpdateUser = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setAlert({ type: '', message: '', visible: false });
+
+  if (userForm.password && userForm.password !== userForm.confirmPassword) {
+    setAlert({ type: 'error', message: 'Passwords do not match', visible: true });
+    setTimeout(() => setAlert({ type: '', message: '', visible: false }), 3000);
+    return;
+  }
+
+  try {
+    const updateData: any = {
+      name: userForm.name,
+      email: userForm.email,
+      mobile: userForm.mobile || null,
+      nic: userForm.nic || null,
+    };
+
+    if (userForm.password) {
+      updateData.password = userForm.password;
+    }
+
+    const response = await axios.put(
+      `http://localhost:5000/api/userManage/me/${user?.id}`, // 👈 use user.id here
+      updateData,
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      }
+    );
+
+    // Update token if returned
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token);
+    }
+
+    setAlert({ type: 'success', message: response.data.message, visible: true });
+
+    updateUser({ ...user!, name: userForm.name, email: userForm.email });
+
+    await fetchUserDetails();
+
+    setUserForm((prev) => ({ ...prev, password: '', confirmPassword: '' }));
+
+    setTimeout(() => setAlert({ type: '', message: '', visible: false }), 3000);
+  } catch (error: any) {
+    setAlert({
+      type: 'error',
+      message: error.response?.data?.error || 'Failed to update profile',
+      visible: true,
+    });
+    setTimeout(() => setAlert({ type: '', message: '', visible: false }), 3000);
+  }
+};
+
 
   const statCards = [
     {
@@ -252,6 +393,11 @@ const OwnerDashboard = () => {
     }
   };
 
+  const handleUserInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserForm((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleAddHotel = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setAlert({ type: '', message: '', visible: false });
@@ -287,9 +433,14 @@ const OwnerDashboard = () => {
       setTimeout(() => {
         setCurrentView('hotels');
         setAlert({ type: '', message: '', visible: false });
-      }, 2000);
-    } catch (error) {
-      setAlert({ type: 'error', message: (error as any).response?.data?.error || 'Failed to add hotel', visible: true });
+      }, 3000);
+    } catch (error: any) {
+      setAlert({
+        type: 'error',
+        message: error.response?.data?.error || 'Failed to add hotel',
+        visible: true,
+      });
+      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 3000);
     }
   };
 
@@ -341,9 +492,14 @@ const OwnerDashboard = () => {
       setTimeout(() => {
         setCurrentView('hotels');
         setAlert({ type: '', message: '', visible: false });
-      }, 2000);
-    } catch (error) {
-      setAlert({ type: 'error', message: (error as any).response?.data?.error || 'Failed to update hotel', visible: true });
+      }, 3000);
+    } catch (error: any) {
+      setAlert({
+        type: 'error',
+        message: error.response?.data?.error || 'Failed to update hotel',
+        visible: true,
+      });
+      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 3000);
     }
   };
 
@@ -387,16 +543,20 @@ const OwnerDashboard = () => {
         images: [],
       });
       await fetchDashboardData();
-      // Refresh rooms if we're currently viewing a hotel's rooms
       if (selectedHotelForRooms) {
         fetchRooms(selectedHotelForRooms);
       }
       setTimeout(() => {
         setCurrentView('rooms');
         setAlert({ type: '', message: '', visible: false });
-      }, 2000);
-    } catch (error) {
-      setAlert({ type: 'error', message: (error as any).response?.data?.error || 'Failed to add room', visible: true });
+      }, 3000);
+    } catch (error: any) {
+      setAlert({
+        type: 'error',
+        message: error.response?.data?.error || 'Failed to add room',
+        visible: true,
+      });
+      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 3000);
     }
   };
 
@@ -457,16 +617,20 @@ const OwnerDashboard = () => {
       });
       setSelectedRoom(null);
       await fetchDashboardData();
-      // Refresh rooms if we're currently viewing a hotel's rooms
       if (selectedHotelForRooms) {
         fetchRooms(selectedHotelForRooms);
       }
       setTimeout(() => {
         setCurrentView('rooms');
         setAlert({ type: '', message: '', visible: false });
-      }, 2000);
-    } catch (error) {
-      setAlert({ type: 'error', message: (error as any).response?.data?.error || 'Failed to update room', visible: true });
+      }, 3000);
+    } catch (error: any) {
+      setAlert({
+        type: 'error',
+        message: error.response?.data?.error || 'Failed to update room',
+        visible: true,
+      });
+      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 3000);
     }
   };
 
@@ -479,13 +643,17 @@ const OwnerDashboard = () => {
       });
       setAlert({ type: 'success', message: 'Room deleted successfully', visible: true });
       await fetchDashboardData();
-      // Refresh rooms if we're currently viewing a hotel's rooms
       if (selectedHotelForRooms) {
         fetchRooms(selectedHotelForRooms);
       }
-      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 2000);
-    } catch (error) {
-      setAlert({ type: 'error', message: (error as any).response?.data?.error || 'Failed to delete room', visible: true });
+      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 3000);
+    } catch (error: any) {
+      setAlert({
+        type: 'error',
+        message: error.response?.data?.error || 'Failed to delete room',
+        visible: true,
+      });
+      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 3000);
     }
   };
 
@@ -493,17 +661,24 @@ const OwnerDashboard = () => {
     if (!window.confirm('Are you sure you want to delete this image?')) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/rooms/roomsmanage/${imageId}`, {
+      await axios.delete(`http://localhost:5000/api/roomsmanage/images/${imageId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setAlert({ type: 'success', message: 'Image deleted successfully', visible: true });
       if (selectedRoom) {
-        const response = await axios.get(`http://localhost:5000/api/roomsmanage/${selectedRoom.id}`);
+        const response = await axios.get(`http://localhost:5000/api/roomsmanage/${selectedRoom.id}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
         setSelectedRoom(response.data.room);
       }
-      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 2000);
-    } catch (error) {
-      setAlert({ type: 'error', message: (error as any).response?.data?.error || 'Failed to delete image', visible: true });
+      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 3000);
+    } catch (error: any) {
+      setAlert({
+        type: 'error',
+        message: error.response?.data?.error || 'Failed to delete image',
+        visible: true,
+      });
+      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 3000);
     }
   };
 
@@ -578,7 +753,7 @@ const OwnerDashboard = () => {
                     <div className="relative w-full h-40 mb-4">
                       {room.images && room.images.length > 0 ? (
                         <img
-                          src={`http://localhost:5000/${room.images[0].image}`}
+                          src={`http://localhost:5000${room.images[0].image}`}
                           alt={room.name}
                           className="object-cover w-full h-full rounded-lg"
                         />
@@ -807,14 +982,210 @@ const OwnerDashboard = () => {
         return (
           <div className="p-6 bg-white shadow-xl rounded-2xl">
             <h2 className="mb-6 text-2xl font-bold text-[#747293]">Bookings</h2>
-            <p className="text-[#908ea9]">View and manage all bookings across your properties.</p>
+            {hotels.length > 0 ? (
+              <div className="mb-6">
+                <label className="block mb-2 text-sm font-medium text-[#747293]">Select Hotel</label>
+                <select
+                  value={selectedHotelForRooms}
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      fetchRooms(e.target.value);
+                    } else {
+                      setRooms([]);
+                      setSelectedHotelForRooms('');
+                    }
+                  }}
+                  className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                >
+                  <option value="">Select a hotel</option>
+                  {hotels.map((hotel) => (
+                    <option key={hotel.id} value={hotel.id}>
+                      {hotel.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <p className="text-[#908ea9] text-center py-6">No hotels found. Add a hotel first!</p>
+            )}
+            {bookings.length > 0 ? (
+              <div className="space-y-4">
+                {bookings
+                  .filter((booking) => !selectedHotelForRooms || booking.hotel_name === hotels.find(h => h.id === parseInt(selectedHotelForRooms))?.name)
+                  .map((booking) => (
+                    <div key={booking.id} className="p-4 bg-[#e3e3e9] rounded-lg shadow-md">
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        <div>
+                          <p className="text-sm font-medium text-[#747293]">{booking.room_name}</p>
+                          <p className="text-xs text-[#908ea9]">Hotel: {booking.hotel_name}</p>
+                          <p className="text-xs text-[#908ea9]">Customer: {booking.customer_name}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-[#908ea9]">
+                            Check-in: {new Date(booking.check_in).toLocaleDateString()}
+                          </p>
+                          <p className="text-xs text-[#908ea9]">
+                            Check-out: {new Date(booking.check_out).toLocaleDateString()}
+                          </p>
+                          <p className="text-xs text-[#908ea9]">
+                            Rooms: {booking.room_count} | Adults: {booking.adult_count}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-[#747293]">${booking.price}</p>
+                          <p className="text-xs text-[#908ea9]">
+                            Special Note: {booking.special_note || 'None'}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <select
+                            value={booking.booking_status}
+                            onChange={(e) => handleUpdateBookingStatus(booking.id, e.target.value)}
+                            className="px-2 py-1 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="cancelled">Cancelled</option>
+                          </select>
+                          <span
+                            className={`text-xs px-2 py-1 rounded-full ${
+                              booking.booking_status === 'confirmed'
+                                ? 'bg-green-100 text-green-700'
+                                : booking.booking_status === 'pending'
+                                ? 'bg-yellow-100 text-yellow-700'
+                                : 'bg-red-100 text-red-700'
+                            }`}
+                          >
+                            {booking.booking_status}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            ) : (
+              <p className="text-[#908ea9] text-center py-6">No bookings found.</p>
+            )}
           </div>
         );
       case 'settings':
         return (
-          <div className="p-6 bg-white shadow-xl rounded-2xl">
-            <h2 className="mb-6 text-2xl font-bold text-[#747293]">Settings</h2>
-            <p className="text-[#908ea9]">Configure your account and application settings.</p>
+          <div className="w-full min-h-screen bg-gradient-to-b from-[#e3e3e9] to-[#c7c7d4] p-4 sm:p-6 md:p-8">
+            <div className="max-w-4xl p-6 mx-auto bg-white shadow-xl rounded-2xl sm:p-8 md:p-10">
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#747293] mb-6 sm:mb-8">Update Profile</h2>
+              {alert.visible && (
+                <div
+                  className={`p-4 mb-6 text-sm rounded-lg flex items-center justify-between ${
+                    alert.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                  }`}
+                >
+                  <span>{alert.message}</span>
+                  <button
+                    onClick={() => setAlert({ type: '', message: '', visible: false })}
+                    className="text-sm font-semibold"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+              <form onSubmit={handleUpdateUser} className="space-y-5">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={userForm.name}
+                      onChange={handleUserInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                      placeholder="Enter your name"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={userForm.email}
+                      onChange={handleUserInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                      placeholder="Enter your email"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">Mobile</label>
+                    <input
+                      type="text"
+                      name="mobile"
+                      value={userForm.mobile}
+                      onChange={handleUserInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                      placeholder="Enter your mobile number"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">NIC</label>
+                    <input
+                      type="text"
+                      name="nic"
+                      value={userForm.nic}
+                      onChange={handleUserInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                      placeholder="Enter your NIC"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">New Password</label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={userForm.password}
+                      onChange={handleUserInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                      placeholder="Enter new password (optional)"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">Confirm New Password</label>
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      value={userForm.confirmPassword}
+                      onChange={handleUserInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                      placeholder="Confirm new password"
+                    />
+                  </div>
+                </div>
+                <div className="flex space-x-4">
+                  <button
+                    type="submit"
+                    className="w-full px-6 py-3 mt-6 bg-[#747293] text-white rounded-lg hover:bg-[#908ea9] focus:ring-2 focus:ring-[#acaabe] focus:outline-none transition-all duration-300"
+                  >
+                    Update Profile
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUserForm({
+                        name: userDetails?.name || '',
+                        email: userDetails?.email || '',
+                        mobile: userDetails?.mobile || '',
+                        nic: userDetails?.nic || '',
+                        password: '',
+                        confirmPassword: '',
+                      });
+                      setAlert({ type: '', message: '', visible: false });
+                    }}
+                    className="w-full px-6 py-3 mt-6 bg-[#c7c7d4] text-[#747293] rounded-lg hover:bg-[#acaabe] focus:ring-2 focus:ring-[#908ea9] focus:outline-none transition-all duration-300"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         );
       case 'add-hotel':
@@ -851,6 +1222,7 @@ const OwnerDashboard = () => {
                       onChange={handleHotelInputChange}
                       className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293] transition-all"
                       placeholder="Enter hotel name"
+                      required
                     />
                   </div>
                   <div>
@@ -862,6 +1234,7 @@ const OwnerDashboard = () => {
                       onChange={handleHotelInputChange}
                       className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293] transition-all"
                       placeholder="Enter hotel location"
+                      required
                     />
                   </div>
                   <div className="sm:col-span-2">
@@ -1007,6 +1380,13 @@ const OwnerDashboard = () => {
                   >
                     <Calendar className="w-5 h-5 text-[#747293]" />
                     <span className="font-medium text-[#747293]">View Bookings</span>
+                  </button>
+                  <button
+                    onClick={() => handleSidebarItemClick('settings')}
+                    className="flex items-center p-4 space-x-3 transition-colors rounded-lg bg-[#e3e3e9] hover:bg-[#c7c7d4]"
+                  >
+                    <Settings className="w-5 h-5 text-[#747293]" />
+                    <span className="font-medium text-[#747293]">Settings</span>
                   </button>
                 </div>
               </div>

@@ -12,6 +12,8 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const hotelRoutesowner = require('./routes/hotels');
 const roomRoutesowner = require('./routes/rooms');
 const bookingRoutesowner = require('./routes/bookings');
+const UserRoutesDash = require('./routes/users');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -38,7 +40,9 @@ app.use('/api/bookings', bookingRoutes);
 
 app.use('/api/hotelsmanage', hotelRoutesowner);
 app.use('/api/roomsmanage', roomRoutesowner);
-app.use('/api/bookings', bookingRoutesowner);
+app.use('/api/bookingsManage', bookingRoutesowner);
+app.use('/api/userManage', UserRoutesDash);
+
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
