@@ -116,7 +116,7 @@ const RoomSingle: React.FC = () => {
                   </button>
                   
                   <div className="absolute flex space-x-2 transform -translate-x-1/2 bottom-4 left-1/2">
-                    {images.map((_, index) => (
+                    {images.map((image: string, index: number) => (
                       <button
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
