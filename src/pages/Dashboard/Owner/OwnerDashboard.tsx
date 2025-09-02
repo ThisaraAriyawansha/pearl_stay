@@ -12,12 +12,13 @@ import {
   Settings,
   User,
   Edit,
+  Trash2,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../../contexts/AuthContext';
 
-type DashboardView = 'dashboard' | 'hotels' | 'rooms' | 'bookings' | 'settings' | 'add-hotel' | 'edit-hotel';
+type DashboardView = 'dashboard' | 'hotels' | 'rooms' | 'bookings' | 'settings' | 'add-hotel' | 'edit-hotel' | 'add-room' | 'edit-room';
 
 interface Booking {
   id: number;
@@ -39,6 +40,21 @@ interface Hotel {
   logo: string | null;
 }
 
+interface Room {
+  id: number;
+  hotel_id: number;
+  name: string;
+  price_per_night: number;
+  adult_price: number;
+  total_room: number;
+  size: string;
+  bed_type: string;
+  description: string;
+  status_name: string;
+  hotel_name: string;
+  images: { id: number; image: string }[];
+}
+
 const OwnerDashboard = () => {
   const [stats, setStats] = useState({
     totalHotels: 0,
@@ -49,10 +65,13 @@ const OwnerDashboard = () => {
   });
   const [recentBookings, setRecentBookings] = useState<Booking[]>([]);
   const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentView, setCurrentView] = useState<DashboardView>('dashboard');
   const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [selectedHotelForRooms, setSelectedHotelForRooms] = useState<string>('');
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -64,8 +83,31 @@ const OwnerDashboard = () => {
     name: '',
     location: '',
     description: '',
-    logo: null,
-    cover_image: null,
+    logo: null as File | null,
+    cover_image: null as File | null,
+  });
+
+  // State for the room form
+  const [roomForm, setRoomForm] = useState<{
+    hotel_id: string;
+    name: string;
+    price_per_night: string;
+    adult_price: string;
+    total_room: string;
+    size: string;
+    bed_type: string;
+    description: string;
+    images: File[];
+  }>({
+    hotel_id: '',
+    name: '',
+    price_per_night: '',
+    adult_price: '',
+    total_room: '',
+    size: '',
+    bed_type: '',
+    description: '',
+    images: [],
   });
 
   useEffect(() => {
@@ -88,7 +130,7 @@ const OwnerDashboard = () => {
 
       for (const hotel of hotels) {
         try {
-          const roomsRes = await axios.get(`http://localhost:5000/api/rooms/hotel/${hotel.id}`);
+          const roomsRes = await axios.get(`http://localhost:5000/api/roomsmanage/hotel/${hotel.id}`);
           totalRooms += roomsRes.data.rooms.length;
 
           const bookingsRes = await axios.get(`http://localhost:5000/api/bookings/hotel/${hotel.id}`);
@@ -124,6 +166,17 @@ const OwnerDashboard = () => {
       setAlert({ type: 'error', message: 'Failed to load dashboard data', visible: true });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRooms = async (hotelId: string) => {
+    try {
+      setSelectedHotelForRooms(hotelId);
+      const response = await axios.get(`http://localhost:5000/api/roomsmanage/hotel/${hotelId}`);
+      setRooms(response.data.rooms);
+    } catch (error) {
+      console.error('Error fetching rooms:', error);
+      setAlert({ type: 'error', message: 'Failed to load rooms', visible: true });
     }
   };
 
@@ -175,15 +228,27 @@ const OwnerDashboard = () => {
     navigate('/');
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleHotelInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setHotelForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleHotelFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     if (files && files[0]) {
       setHotelForm((prev) => ({ ...prev, [name]: files[0] }));
+    }
+  };
+
+  const handleRoomInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setRoomForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleRoomFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    if (files) {
+      setRoomForm((prev) => ({ ...prev, images: Array.from(files) }));
     }
   };
 
@@ -282,6 +347,166 @@ const OwnerDashboard = () => {
     }
   };
 
+  const handleAddRoom = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setAlert({ type: '', message: '', visible: false });
+
+    if (!roomForm.hotel_id || !roomForm.name || !roomForm.price_per_night) {
+      setAlert({ type: 'error', message: 'Please fill in all required fields (Hotel, Name, Price per Night).', visible: true });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('hotel_id', roomForm.hotel_id);
+    formData.append('name', roomForm.name);
+    formData.append('price_per_night', roomForm.price_per_night);
+    formData.append('adult_price', roomForm.adult_price);
+    formData.append('total_room', roomForm.total_room);
+    formData.append('size', roomForm.size);
+    formData.append('bed_type', roomForm.bed_type);
+    formData.append('description', roomForm.description);
+    roomForm.images.forEach((image) => formData.append('images', image));
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/roomsmanage', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      setAlert({ type: 'success', message: response.data.message, visible: true });
+      setRoomForm({
+        hotel_id: '',
+        name: '',
+        price_per_night: '',
+        adult_price: '',
+        total_room: '',
+        size: '',
+        bed_type: '',
+        description: '',
+        images: [],
+      });
+      await fetchDashboardData();
+      // Refresh rooms if we're currently viewing a hotel's rooms
+      if (selectedHotelForRooms) {
+        fetchRooms(selectedHotelForRooms);
+      }
+      setTimeout(() => {
+        setCurrentView('rooms');
+        setAlert({ type: '', message: '', visible: false });
+      }, 2000);
+    } catch (error) {
+      setAlert({ type: 'error', message: (error as any).response?.data?.error || 'Failed to add room', visible: true });
+    }
+  };
+
+  const handleEditRoom = (room: Room) => {
+    setSelectedRoom(room);
+    setRoomForm({
+      hotel_id: room.hotel_id.toString(),
+      name: room.name || '',
+      price_per_night: room.price_per_night.toString() || '',
+      adult_price: room.adult_price.toString() || '',
+      total_room: room.total_room.toString() || '',
+      size: room.size || '',
+      bed_type: room.bed_type || '',
+      description: room.description || '',
+      images: [],
+    });
+    setCurrentView('edit-room');
+  };
+
+  const handleUpdateRoom = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setAlert({ type: '', message: '', visible: false });
+
+    if (!roomForm.hotel_id || !roomForm.name || !roomForm.price_per_night) {
+      setAlert({ type: 'error', message: 'Please fill in all required fields (Hotel, Name, Price per Night).', visible: true });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('hotel_id', roomForm.hotel_id);
+    formData.append('name', roomForm.name);
+    formData.append('price_per_night', roomForm.price_per_night);
+    formData.append('adult_price', roomForm.adult_price);
+    formData.append('total_room', roomForm.total_room);
+    formData.append('size', roomForm.size);
+    formData.append('bed_type', roomForm.bed_type);
+    formData.append('description', roomForm.description);
+    roomForm.images.forEach((image) => formData.append('images', image));
+
+    try {
+      const response = await axios.put(`http://localhost:5000/api/roomsmanage/${selectedRoom!.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      setAlert({ type: 'success', message: response.data.message, visible: true });
+      setRoomForm({
+        hotel_id: '',
+        name: '',
+        price_per_night: '',
+        adult_price: '',
+        total_room: '',
+        size: '',
+        bed_type: '',
+        description: '',
+        images: [],
+      });
+      setSelectedRoom(null);
+      await fetchDashboardData();
+      // Refresh rooms if we're currently viewing a hotel's rooms
+      if (selectedHotelForRooms) {
+        fetchRooms(selectedHotelForRooms);
+      }
+      setTimeout(() => {
+        setCurrentView('rooms');
+        setAlert({ type: '', message: '', visible: false });
+      }, 2000);
+    } catch (error) {
+      setAlert({ type: 'error', message: (error as any).response?.data?.error || 'Failed to update room', visible: true });
+    }
+  };
+
+  const handleDeleteRoom = async (roomId: number) => {
+    if (!window.confirm('Are you sure you want to delete this room?')) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/api/roomsmanage/${roomId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      setAlert({ type: 'success', message: 'Room deleted successfully', visible: true });
+      await fetchDashboardData();
+      // Refresh rooms if we're currently viewing a hotel's rooms
+      if (selectedHotelForRooms) {
+        fetchRooms(selectedHotelForRooms);
+      }
+      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 2000);
+    } catch (error) {
+      setAlert({ type: 'error', message: (error as any).response?.data?.error || 'Failed to delete room', visible: true });
+    }
+  };
+
+  const handleDeleteRoomImage = async (imageId: number) => {
+    if (!window.confirm('Are you sure you want to delete this image?')) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/api/rooms/roomsmanage/${imageId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      setAlert({ type: 'success', message: 'Image deleted successfully', visible: true });
+      if (selectedRoom) {
+        const response = await axios.get(`http://localhost:5000/api/roomsmanage/${selectedRoom.id}`);
+        setSelectedRoom(response.data.room);
+      }
+      setTimeout(() => setAlert({ type: '', message: '', visible: false }), 2000);
+    } catch (error) {
+      setAlert({ type: 'error', message: (error as any).response?.data?.error || 'Failed to delete image', visible: true });
+    }
+  };
+
   const renderContent = () => {
     switch (currentView) {
       case 'hotels':
@@ -319,7 +544,263 @@ const OwnerDashboard = () => {
         return (
           <div className="p-6 bg-white shadow-xl rounded-2xl">
             <h2 className="mb-6 text-2xl font-bold text-[#747293]">Room Management</h2>
-            <p className="text-[#908ea9]">View and manage all your rooms.</p>
+            {hotels.length > 0 ? (
+              <div className="mb-6">
+                <label className="block mb-2 text-sm font-medium text-[#747293]">Select Hotel</label>
+                <select
+                  value={selectedHotelForRooms}
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      fetchRooms(e.target.value);
+                    } else {
+                      setRooms([]);
+                      setSelectedHotelForRooms('');
+                    }
+                  }}
+                  className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                >
+                  <option value="">Select a hotel</option>
+                  {hotels.map((hotel) => (
+                    <option key={hotel.id} value={hotel.id}>
+                      {hotel.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <p className="text-[#908ea9] text-center py-6">No hotels found. Add a hotel first!</p>
+            )}
+            
+            {selectedHotelForRooms && rooms.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {rooms.map((room) => (
+                  <div key={room.id} className="p-4 bg-[#e3e3e9] rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                    <div className="relative w-full h-40 mb-4">
+                      {room.images && room.images.length > 0 ? (
+                        <img
+                          src={`http://localhost:5000${room.images[0].image}`}
+                          alt={room.name}
+                          className="object-cover w-full h-full rounded-lg"
+                        />
+                      ) : (
+                        <img
+                          src="https://via.placeholder.com/300x150"
+                          alt={room.name}
+                          className="object-cover w-full h-full rounded-lg"
+                        />
+                      )}
+                    </div>
+                    <h3 className="text-lg font-semibold text-[#747293]">{room.name}</h3>
+                    <p className="text-sm text-[#908ea9] mb-1">Hotel: {room.hotel_name}</p>
+                    <p className="text-sm text-[#908ea9] mb-1">Price: ${room.price_per_night}/night</p>
+                    <p className="text-sm text-[#908ea9] mb-2">Total Rooms: {room.total_room}</p>
+                    <p className="text-sm text-[#908ea9] line-clamp-2">{room.description || 'No description'}</p>
+                    <div className="flex mt-4 space-x-2">
+                      <button
+                        onClick={() => handleEditRoom(room)}
+                        className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-[#acaabe] text-white rounded-lg hover:bg-[#908ea9] transition-all"
+                      >
+                        <Edit className="w-4 h-4" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteRoom(room.id)}
+                        className="flex items-center justify-center flex-1 px-4 py-2 space-x-2 text-white transition-all bg-red-500 rounded-lg hover:bg-red-600"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : selectedHotelForRooms ? (
+              <div className="py-8 text-center">
+                <Bed className="w-12 h-12 mx-auto text-[#908ea9] mb-4" />
+                <p className="text-[#908ea9]">No rooms found for this hotel.</p>
+                <button
+                  onClick={() => handleSidebarItemClick('add-room')}
+                  className="mt-4 px-4 py-2 bg-[#747293] text-white rounded-lg hover:bg-[#908ea9]"
+                >
+                  Add Room
+                </button>
+              </div>
+            ) : null}
+          </div>
+        );
+      case 'add-room':
+      case 'edit-room':
+        return (
+          <div className="w-full min-h-screen bg-gradient-to-b from-[#e3e3e9] to-[#c7c7d4] p-4 sm:p-6 md:p-8">
+            <div className="max-w-4xl p-6 mx-auto bg-white shadow-xl rounded-2xl sm:p-8 md:p-10">
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#747293] mb-6 sm:mb-8">
+                {currentView === 'add-room' ? 'Add New Room' : 'Edit Room'}
+              </h2>
+              {alert.visible && (
+                <div
+                  className={`p-4 mb-6 text-sm rounded-lg flex items-center justify-between ${
+                    alert.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                  }`}
+                >
+                  <span>{alert.message}</span>
+                  <button
+                    onClick={() => setAlert({ type: '', message: '', visible: false })}
+                    className="text-sm font-semibold"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+              <form onSubmit={currentView === 'add-room' ? handleAddRoom : handleUpdateRoom} className="space-y-5">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">Hotel</label>
+                    <select
+                      name="hotel_id"
+                      value={roomForm.hotel_id}
+                      onChange={handleRoomInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                    >
+                      <option value="">Select a hotel</option>
+                      {hotels.map((hotel) => (
+                        <option key={hotel.id} value={hotel.id}>
+                          {hotel.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">Room Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={roomForm.name}
+                      onChange={handleRoomInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                      placeholder="Enter room name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">Price per Night</label>
+                    <input
+                      type="number"
+                      name="price_per_night"
+                      value={roomForm.price_per_night}
+                      onChange={handleRoomInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                      placeholder="Enter price per night"
+                      step="0.01"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">Adult Price</label>
+                    <input
+                      type="number"
+                      name="adult_price"
+                      value={roomForm.adult_price}
+                      onChange={handleRoomInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                      placeholder="Enter adult price"
+                      step="0.01"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">Total Rooms</label>
+                    <input
+                      type="number"
+                      name="total_room"
+                      value={roomForm.total_room}
+                      onChange={handleRoomInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                      placeholder="Enter total rooms"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">Size</label>
+                    <input
+                      type="text"
+                      name="size"
+                      value={roomForm.size}
+                      onChange={handleRoomInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                      placeholder="Enter room size (e.g., 300 sq ft)"
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">Bed Type</label>
+                    <input
+                      type="text"
+                      name="bed_type"
+                      value={roomForm.bed_type}
+                      onChange={handleRoomInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                      placeholder="Enter bed type (e.g., Queen, King)"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">Description</label>
+                    <textarea
+                      name="description"
+                      value={roomForm.description}
+                      onChange={handleRoomInputChange}
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293]"
+                      placeholder="Enter room description"
+                      rows={4}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block mb-2 text-sm font-medium text-[#747293]">Room Images</label>
+                    <input
+                      type="file"
+                      name="images"
+                      accept="image/jpeg,image/jpg,image/png"
+                      onChange={handleRoomFileChange}
+                      multiple
+                      className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#acaabe] file:text-white hover:file:bg-[#908ea9] transition-all"
+                    />
+                    {currentView === 'edit-room' && selectedRoom?.images && selectedRoom.images.length > 0 && (
+                      <div className="grid grid-cols-2 gap-4 mt-4 sm:grid-cols-3">
+                        {selectedRoom.images.map((image) => (
+                          <div key={image.id} className="relative">
+                            <img
+                              src={`http://localhost:5000${image.image}`}
+                              alt="Room"
+                              className="object-cover w-full h-24 rounded-lg"
+                            />
+                            <button
+                              onClick={() => handleDeleteRoomImage(image.id)}
+                              className="absolute p-1 text-white bg-red-500 rounded-full top-1 right-1 hover:bg-red-600"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex space-x-4">
+                  <button
+                    type="submit"
+                    className="w-full px-6 py-3 mt-6 bg-[#747293] text-white rounded-lg hover:bg-[#908ea9] focus:ring-2 focus:ring-[#acaabe] focus:outline-none transition-all duration-300"
+                  >
+                    {currentView === 'add-room' ? 'Add Room' : 'Update Room'}
+                  </button>
+                  {currentView === 'edit-room' && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCurrentView('rooms');
+                        setAlert({ type: '', message: '', visible: false });
+                      }}
+                      className="w-full px-6 py-3 mt-6 bg-[#c7c7d4] text-[#747293] rounded-lg hover:bg-[#acaabe] focus:ring-2 focus:ring-[#908ea9] focus:outline-none transition-all duration-300"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
           </div>
         );
       case 'bookings':
@@ -367,7 +848,7 @@ const OwnerDashboard = () => {
                       type="text"
                       name="name"
                       value={hotelForm.name}
-                      onChange={handleInputChange}
+                      onChange={handleHotelInputChange}
                       className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293] transition-all"
                       placeholder="Enter hotel name"
                     />
@@ -378,7 +859,7 @@ const OwnerDashboard = () => {
                       type="text"
                       name="location"
                       value={hotelForm.location}
-                      onChange={handleInputChange}
+                      onChange={handleHotelInputChange}
                       className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293] transition-all"
                       placeholder="Enter hotel location"
                     />
@@ -388,7 +869,7 @@ const OwnerDashboard = () => {
                     <textarea
                       name="description"
                       value={hotelForm.description}
-                      onChange={handleInputChange}
+                      onChange={handleHotelInputChange}
                       className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293] transition-all"
                       placeholder="Enter hotel description"
                       rows={4}
@@ -400,7 +881,7 @@ const OwnerDashboard = () => {
                       type="file"
                       name="logo"
                       accept="image/jpeg,image/jpg,image/png"
-                      onChange={handleFileChange}
+                      onChange={handleHotelFileChange}
                       className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#acaabe] file:text-white hover:file:bg-[#908ea9] transition-all"
                     />
                     {currentView === 'edit-hotel' && selectedHotel?.logo && (
@@ -415,7 +896,7 @@ const OwnerDashboard = () => {
                       type="file"
                       name="cover_image"
                       accept="image/jpeg,image/jpg,image/png"
-                      onChange={handleFileChange}
+                      onChange={handleHotelFileChange}
                       className="w-full px-4 py-3 bg-[#e3e3e9] border border-[#c7c7d4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#908ea9] text-[#747293] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#acaabe] file:text-white hover:file:bg-[#908ea9] transition-all"
                     />
                     {currentView === 'edit-hotel' && selectedHotel?.cover_image && (
@@ -603,7 +1084,7 @@ const OwnerDashboard = () => {
             <button
               onClick={() => handleSidebarItemClick('rooms')}
               className={`flex w-full items-center space-x-3 rounded-lg p-3 ${
-                currentView === 'rooms'
+                currentView === 'rooms' || currentView === 'add-room' || currentView === 'edit-room'
                   ? 'bg-[#908ea9] text-white'
                   : 'text-[#c7c7d4] hover:bg-[#908ea9] hover:text-white'
               }`}
@@ -684,6 +1165,8 @@ const OwnerDashboard = () => {
               {currentView === 'settings' && 'Settings'}
               {currentView === 'add-hotel' && 'Add New Hotel'}
               {currentView === 'edit-hotel' && 'Edit Hotel'}
+              {currentView === 'add-room' && 'Add New Room'}
+              {currentView === 'edit-room' && 'Edit Room'}
             </h1>
           </div>
           <div className="flex items-center space-x-4">
@@ -694,6 +1177,15 @@ const OwnerDashboard = () => {
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">Add Hotel</span>
             </button>
+            {(currentView === 'rooms' || currentView === 'add-room' || currentView === 'edit-room') && (
+              <button
+                onClick={() => handleSidebarItemClick('add-room')}
+                className="flex items-center px-4 py-2 space-x-2 text-white transition-colors rounded-lg bg-[#747293] hover:bg-[#908ea9]"
+              >
+                <Plus className="w-4 h-4" />
+                <span className="hidden sm:inline">Add Room</span>
+              </button>
+            )}
           </div>
         </header>
         <main className="flex-1 p-6 overflow-y-auto">

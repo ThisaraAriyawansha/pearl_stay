@@ -33,8 +33,8 @@ app.use('/api/hotels', hotelRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
 
-app.use('/api/hotels', hotelRoutesowner);
-app.use('/api/rooms', roomRoutesowner);
+app.use('/api/hotelsmanage', hotelRoutesowner);
+app.use('/api/roomsmanage', roomRoutesowner);
 app.use('/api/bookings', bookingRoutesowner);
 
 // Health check endpoint
