@@ -104,7 +104,7 @@ router.post(
       const [result] = await db.execute(
         `INSERT INTO hotels (name, location, description, logo, cover_image, user_id, status_id) 
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [name, `${location}, ${city}`, description, logo, cover_image, req.user.id, 2] // status_id 2 = pending
+        [name, `${location}, ${city}`, description, logo, cover_image, req.user.id, 1] 
       );
 
       const [newHotel] = await db.execute(
