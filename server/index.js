@@ -15,6 +15,7 @@ const bookingRoutesowner = require('./routes/bookings');
 const UserRoutesDash = require('./routes/users');
 const AdminRoutesDash = require('./routes/adminManage');
 
+const RoomCardroute = require('./routes/roomcard');
 
 
 const app = express();
@@ -46,6 +47,9 @@ app.use('/api/bookingsManage', bookingRoutesowner);
 app.use('/api/userManage', UserRoutesDash);
 
 app.use('/api/adminManage', AdminRoutesDash);
+
+app.use('/api/roomcard', RoomCardroute);
+
 
 
 
