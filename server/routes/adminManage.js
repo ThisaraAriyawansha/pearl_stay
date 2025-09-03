@@ -37,20 +37,23 @@ router.put('/user/:id', authenticateToken, isAdmin, async (req, res) => {
 });
 
 // GET /api/adminManage/hotel - Get all hotels
-router.get('/hotel', authenticateToken, isAdmin, async (req, res) => {
+router.get('/hotel', async (req, res) => {
   try {
     const [hotels] = await pool.query(`
       SELECT h.*, s.name as status_name, u.name as owner_name,
       (SELECT COUNT(*) FROM rooms r WHERE r.hotel_id = h.id) as room_count
-      FROM hotels h 
+      FROM hotels h
       JOIN statuses s ON h.status_id = s.id
       JOIN users u ON h.user_id = u.id
     `);
+
     res.json(hotels);
   } catch (error) {
+    console.error('Error fetching hotels:', error);
     res.status(500).json({ error: 'Failed to fetch hotels' });
   }
 });
+
 
 // PUT /api/adminManage/hotel/:id - Update hotel status
 router.put('/hotel/:id', authenticateToken, isAdmin, async (req, res) => {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 
 import { 
   BarChart3, 
@@ -36,7 +38,7 @@ interface Hotel {
   id: number;
   name: string;
   location: string;
-  rooms?: any[];
+  room_count?: number;
   status_id: number;
 }
 
@@ -74,7 +76,7 @@ const PearlStayDashboard = () => {
     revenue: 0
   });
   const [userDetails, setUserDetails] = useState<User | null>(null);
-  const { user, updateUser } = useAuth();
+  const { user, updateUser,logout } = useAuth();
   const [alert, setAlert] = useState({ type: '', message: '', visible: false });
   const [userForm, setUserForm] = useState({
     name: '',
@@ -84,7 +86,8 @@ const PearlStayDashboard = () => {
     password: '',
     confirmPassword: '',
   });
-  
+    const navigate = useNavigate();
+    
   useEffect(() => {
     fetchUserDetails();
   }, []);
@@ -119,6 +122,11 @@ const PearlStayDashboard = () => {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+  
   const handleUserInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserForm(prev => ({ ...prev, [name]: value }));
@@ -328,7 +336,7 @@ const PearlStayDashboard = () => {
         </nav>
         
         <div className="absolute bottom-0 w-full p-4 border-t border-[#908ea9]">
-          <button className="w-full flex items-center p-3 rounded-lg hover:bg-[#908ea9]">
+          <button onClick={handleLogout} className="w-full flex items-center p-3 rounded-lg hover:bg-[#908ea9]">
             <LogOut size={20} className="mr-3" />
             Logout
           </button>
@@ -352,7 +360,7 @@ const PearlStayDashboard = () => {
               <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                 <User size={20} className="text-[#908ea9]" />
               </div>
-              <span className="pl-10 pr-4 py-2 bg-[#e3e3e9] rounded-full text-[#747293]">Admin</span>
+              <span className="pl-10 pr-4 py-2 bg-[#e3e3e9] rounded-full text-[#747293]">{user?.name || 'Admin'}</span>
             </div>
           </div>
         </header>
@@ -417,7 +425,7 @@ const DashboardTab = ({ stats, bookings }: { stats: Stats, bookings: Booking[] }
           </div>
         </div>
         
-        <div className="p-6 bg-white rounded-lg shadow-sm">
+        <div className="hidden p-6 bg-white rounded-lg shadow-sm">
           <div className="flex items-center">
             <div className="p-3 rounded-full bg-[#e3e3e9] mr-4">
               <DollarSign className="text-[#747293]" size={24} />
@@ -475,48 +483,67 @@ const DashboardTab = ({ stats, bookings }: { stats: Stats, bookings: Booking[] }
 // Users Tab Component
 const UsersTab = ({ users, updateUserStatus }: { users: User[], updateUserStatus: (userId: number, status: number) => Promise<void> }) => {
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-[#747293] mb-6">User Management</h2>
+    <div className="p-4 mx-auto sm:p-6 max-w-7xl">
+      <h2 className="mb-6 text-xl font-semibold tracking-tight text-gray-800 sm:text-2xl">
+        User Management
+      </h2>
       
-      <div className="overflow-hidden bg-white rounded-lg shadow-sm">
+      <div className="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-xl">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[640px] text-sm">
             <thead>
-              <tr className="border-b border-[#e3e3e9]">
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Name</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Email</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Role</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Status</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Actions</th>
+              <tr className="border-b border-gray-200 bg-gray-50">
+                {['Name', 'Email', 'Role', 'Status', 'Actions'].map((header) => (
+                  <th 
+                    key={header}
+                    className="px-4 py-3 text-xs font-medium tracking-wide text-left text-gray-600 sm:px-6 sm:text-sm"
+                  >
+                    {header}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {users.map(user => (
-                <tr key={user.id} className="border-b border-[#e3e3e9] hover:bg-[#f8f8fa]">
-                  <td className="py-4 px-6 text-[#747293]">{user.name}</td>
-                  <td className="py-4 px-6 text-[#747293]">{user.email}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : user.role === 'owner' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}`}>
+              {users.map((user) => (
+                <tr 
+                  key={user.id} 
+                  className="transition-colors duration-150 border-b border-gray-100 hover:bg-gray-50"
+                >
+                  <td className="px-4 py-4 text-sm text-gray-700 sm:px-6 sm:text-base">
+                    {user.name}
+                  </td>
+                  <td className="px-4 py-4 text-sm text-gray-700 break-all sm:px-6 sm:text-base">
+                    {user.email}
+                  </td>
+                  <td className="px-4 py-4 sm:px-6">
+                    <span 
+                      className={`inline-flex px-2 py-1 rounded-full text-xs font-medium capitalize
+                        ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 
+                          user.role === 'owner' ? 'bg-blue-100 text-blue-700' : 
+                          'bg-gray-100 text-gray-700'}`}
+                    >
                       {user.role}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${user.status_id === 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  <td className="px-4 py-4 sm:px-6">
+                    <span 
+                      className={`inline-flex px-2 py-1 rounded-full text-xs font-medium
+                        ${user.status_id === 1 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                    >
                       {user.status_id === 1 ? 'Active' : 'Inactive'}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex space-x-2">
-                      <button 
-                        onClick={() => updateUserStatus(user.id, user.status_id === 1 ? 3 : 1)}
-                        className={`p-2 rounded ${user.status_id === 1 ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-green-100 text-green-600 hover:bg-green-200'}`}
-                      >
-                        {user.status_id === 1 ? <XCircle size={16} /> : <CheckCircle size={16} />}
-                      </button>
-                      <button className="p-2 rounded bg-[#e3e3e9] text-[#747293] hover:bg-[#d5d5e1]">
-                        <Edit size={16} />
-                      </button>
-                    </div>
+                  <td className="px-4 py-4 sm:px-6">
+                    <button
+                      onClick={() => updateUserStatus(user.id, user.status_id === 1 ? 3 : 1)}
+                      className={`p-2 rounded-full transition-colors duration-150
+                        ${user.status_id === 1 
+                          ? 'bg-red-50 text-red-600 hover:bg-red-100' 
+                          : 'bg-green-50 text-green-600 hover:bg-green-100'}`}
+                      aria-label={user.status_id === 1 ? 'Deactivate user' : 'Activate user'}
+                    >
+                      {user.status_id === 1 ? <XCircle size={16} /> : <CheckCircle size={16} />}
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -531,44 +558,62 @@ const UsersTab = ({ users, updateUserStatus }: { users: User[], updateUserStatus
 // Hotels Tab Component
 const HotelsTab = ({ hotels, updateHotelStatus }: { hotels: Hotel[], updateHotelStatus: (hotelId: number, status: number) => Promise<void> }) => {
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-[#747293] mb-6">Hotel Management</h2>
+    <div className="p-4 mx-auto sm:p-6 max-w-7xl">
+      <h2 className="mb-6 text-xl font-semibold tracking-tight text-gray-800 sm:text-2xl">
+        Hotel Management
+      </h2>
       
-      <div className="overflow-hidden bg-white rounded-lg shadow-sm">
+      <div className="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-xl">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[640px] text-sm">
             <thead>
-              <tr className="border-b border-[#e3e3e9]">
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Name</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Location</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Rooms</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Status</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Actions</th>
+              <tr className="border-b border-gray-200 bg-gray-50">
+                {['Name', 'Location', 'Rooms', 'Status', 'Actions'].map((header) => (
+                  <th 
+                    key={header}
+                    className="px-4 py-3 text-xs font-medium tracking-wide text-left text-gray-600 sm:px-6 sm:text-sm"
+                  >
+                    {header}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {hotels.map(hotel => (
-                <tr key={hotel.id} className="border-b border-[#e3e3e9] hover:bg-[#f8f8fa]">
-                  <td className="py-4 px-6 text-[#747293] font-medium">{hotel.name}</td>
-                  <td className="py-4 px-6 text-[#747293]">{hotel.location}</td>
-                  <td className="py-4 px-6 text-[#747293]">{hotel.rooms?.length || 0}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${hotel.status_id === 1 ? 'bg-green-100 text-green-800' : hotel.status_id === 2 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+              {hotels.map((hotel) => (
+                <tr 
+                  key={hotel.id} 
+                  className="transition-colors duration-150 border-b border-gray-100 hover:bg-gray-50"
+                >
+                  <td className="px-4 py-4 text-sm font-medium text-gray-700 sm:px-6 sm:text-base">
+                    {hotel.name}
+                  </td>
+                  <td className="px-4 py-4 text-sm text-gray-700 break-all sm:px-6 sm:text-base">
+                    {hotel.location}
+                  </td>
+                  <td className="px-4 py-4 text-sm text-gray-700 sm:px-6 sm:text-base">
+                    {hotel.room_count}
+                  </td>
+                  <td className="px-4 py-4 sm:px-6">
+                    <span 
+                      className={`inline-flex px-2 py-1 rounded-full text-xs font-medium capitalize
+                        ${hotel.status_id === 1 ? 'bg-green-100 text-green-700' : 
+                          hotel.status_id === 2 ? 'bg-yellow-100 text-yellow-700' : 
+                          'bg-red-100 text-red-700'}`}
+                    >
                       {hotel.status_id === 1 ? 'Active' : hotel.status_id === 2 ? 'Pending' : 'Inactive'}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex space-x-2">
-                      <button 
-                        onClick={() => updateHotelStatus(hotel.id, hotel.status_id === 1 ? 3 : 1)}
-                        className={`p-2 rounded ${hotel.status_id === 1 ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-green-100 text-green-600 hover:bg-green-200'}`}
-                      >
-                        {hotel.status_id === 1 ? <XCircle size={16} /> : <CheckCircle size={16} />}
-                      </button>
-                      <button className="p-2 rounded bg-[#e3e3e9] text-[#747293] hover:bg-[#d5d5e1]">
-                        <Edit size={16} />
-                      </button>
-                    </div>
+                  <td className="px-4 py-4 sm:px-6">
+                    <button
+                      onClick={() => updateHotelStatus(hotel.id, hotel.status_id === 1 ? 3 : 1)}
+                      className={`p-2 rounded-full transition-colors duration-150
+                        ${hotel.status_id === 1 
+                          ? 'bg-red-50 text-red-600 hover:bg-red-100' 
+                          : 'bg-green-50 text-green-600 hover:bg-green-100'}`}
+                      aria-label={hotel.status_id === 1 ? 'Deactivate hotel' : 'Activate hotel'}
+                    >
+                      {hotel.status_id === 1 ? <XCircle size={16} /> : <CheckCircle size={16} />}
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -583,59 +628,80 @@ const HotelsTab = ({ hotels, updateHotelStatus }: { hotels: Hotel[], updateHotel
 // Bookings Tab Component
 const BookingsTab = ({ bookings, updateBookingStatus }: { bookings: Booking[], updateBookingStatus: (bookingId: number, status: string) => Promise<void> }) => {
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-[#747293] mb-6">Booking Management</h2>
+    <div className="p-4 mx-auto sm:p-6 max-w-7xl">
+      <h2 className="mb-6 text-xl font-semibold tracking-tight text-gray-800 sm:text-2xl">
+        Booking Management
+      </h2>
       
-      <div className="overflow-hidden bg-white rounded-lg shadow-sm">
+      <div className="overflow-hidden bg-white border border-gray-100 shadow-sm rounded-xl">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[768px] text-sm">
             <thead>
-              <tr className="border-b border-[#e3e3e9]">
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">ID</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">User</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Room</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Check In</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Check Out</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Amount</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Status</th>
-                <th className="pb-3 px-6 text-left text-[#908ea9] text-sm">Actions</th>
+              <tr className="border-b border-gray-200 bg-gray-50">
+                {['ID', 'User', 'Room', 'Check In', 'Check Out', 'Amount', 'Status', 'Actions'].map((header) => (
+                  <th 
+                    key={header}
+                    className="px-4 py-3 text-xs font-medium tracking-wide text-left text-gray-600 sm:px-6 sm:text-sm"
+                  >
+                    {header}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {bookings.map(booking => (
-                <tr key={booking.id} className="border-b border-[#e3e3e9] hover:bg-[#f8f8fa]">
-                  <td className="py-4 px-6 text-[#747293]">#{booking.id}</td>
-                  <td className="py-4 px-6 text-[#747293]">{booking.user_name}</td>
-                  <td className="py-4 px-6 text-[#747293]">{booking.room_name} ({booking.hotel_name})</td>
-                  <td className="py-4 px-6 text-[#747293]">{booking.check_in}</td>
-                  <td className="py-4 px-6 text-[#747293]">{booking.check_out}</td>
-                  <td className="py-4 px-6 text-[#747293]">${booking.price}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs ${booking.booking_status === 'confirmed' ? 'bg-green-100 text-green-800' : booking.booking_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+              {bookings.map((booking) => (
+                <tr 
+                  key={booking.id} 
+                  className="transition-colors duration-150 border-b border-gray-100 hover:bg-gray-50"
+                >
+                  <td className="px-4 py-4 text-sm font-medium text-gray-700 sm:px-6 sm:text-base">
+                    #{booking.id}
+                  </td>
+                  <td className="px-4 py-4 text-sm text-gray-700 sm:px-6 sm:text-base">
+                    {booking.user_name}
+                  </td>
+                  <td className="px-4 py-4 text-sm text-gray-700 break-words sm:px-6 sm:text-base">
+                    {booking.room_name} ({booking.hotel_name})
+                  </td>
+                  <td className="px-4 py-4 text-sm text-gray-700 sm:px-6 sm:text-base">
+                    {booking.check_in}
+                  </td>
+                  <td className="px-4 py-4 text-sm text-gray-700 sm:px-6 sm:text-base">
+                    {booking.check_out}
+                  </td>
+                  <td className="px-4 py-4 text-sm text-gray-700 sm:px-6 sm:text-base">
+                    ${booking.price}
+                  </td>
+                  <td className="px-4 py-4 sm:px-6">
+                    <span 
+                      className={`inline-flex px-2 py-1 rounded-full text-xs font-medium capitalize
+                        ${booking.booking_status === 'confirmed' ? 'bg-green-100 text-green-700' : 
+                          booking.booking_status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 
+                          'bg-red-100 text-red-700'}`}
+                    >
                       {booking.booking_status}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-4 sm:px-6">
                     <div className="flex space-x-2">
                       {booking.booking_status === 'pending' && (
-                        <button 
+                        <button
                           onClick={() => updateBookingStatus(booking.id, 'confirmed')}
-                          className="p-2 text-green-600 bg-green-100 rounded hover:bg-green-200"
+                          className="p-2 text-green-600 transition-colors duration-150 rounded-full bg-green-50 hover:bg-green-100"
+                          aria-label="Confirm booking"
                         >
                           <CheckCircle size={16} />
                         </button>
                       )}
                       {booking.booking_status !== 'cancelled' && (
-                        <button 
+                        <button
                           onClick={() => updateBookingStatus(booking.id, 'cancelled')}
-                          className="p-2 text-red-600 bg-red-100 rounded hover:bg-red-200"
+                          className="p-2 text-red-600 transition-colors duration-150 rounded-full bg-red-50 hover:bg-red-100"
+                          aria-label="Cancel booking"
                         >
                           <XCircle size={16} />
                         </button>
                       )}
-                      <button className="p-2 rounded bg-[#e3e3e9] text-[#747293] hover:bg-[#d5d5e1]">
-                        <MoreVertical size={16} />
-                      </button>
                     </div>
                   </td>
                 </tr>
