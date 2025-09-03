@@ -32,21 +32,21 @@ const Home: React.FC = () => {
   return (
     <div className="pt-16">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center">
+      <section className="relative flex items-center justify-center h-screen">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-center bg-no-repeat bg-cover"
           style={{
             backgroundImage: 'url(https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=1920)'
           }}
         />
         <div className="absolute inset-0 bg-black bg-opacity-50" />
         
-        <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+        <div className="relative z-10 max-w-4xl px-4 mx-auto text-center text-white">
+          <h1 className="mb-6 text-5xl font-bold md:text-6xl">
             Discover Your Perfect
             <span className="block text-accent-300">Stay</span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-200">
+          <p className="mb-8 text-xl text-gray-200 md:text-2xl">
             Experience luxury and comfort at the world's finest hotels
           </p>
           
@@ -58,42 +58,42 @@ const Home: React.FC = () => {
 
       {/* Features Section */}
       <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold text-gray-800 md:text-4xl">
               Why Choose PearlStay?
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="max-w-2xl mx-auto text-xl text-gray-600">
               We provide exceptional service and unforgettable experiences
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6 rounded-lg hover:shadow-lg transition-shadow">
-              <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Star className="h-8 w-8 text-primary-600" />
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="p-6 text-center transition-shadow rounded-lg hover:shadow-lg">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-primary-100">
+                <Star className="w-8 h-8 text-primary-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Premium Quality</h3>
+              <h3 className="mb-3 text-xl font-semibold text-gray-800">Premium Quality</h3>
               <p className="text-gray-600">
                 Carefully curated hotels that meet our high standards for comfort and service
               </p>
             </div>
 
-            <div className="text-center p-6 rounded-lg hover:shadow-lg transition-shadow">
-              <div className="bg-secondary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MapPin className="h-8 w-8 text-secondary-600" />
+            <div className="p-6 text-center transition-shadow rounded-lg hover:shadow-lg">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-secondary-100">
+                <MapPin className="w-8 h-8 text-secondary-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Global Locations</h3>
+              <h3 className="mb-3 text-xl font-semibold text-gray-800">Global Locations</h3>
               <p className="text-gray-600">
                 Access to beautiful properties in the most sought-after destinations worldwide
               </p>
             </div>
 
-            <div className="text-center p-6 rounded-lg hover:shadow-lg transition-shadow">
-              <div className="bg-accent-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Calendar className="h-8 w-8 text-accent-600" />
+            <div className="p-6 text-center transition-shadow rounded-lg hover:shadow-lg">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-accent-100">
+                <Calendar className="w-8 h-8 text-accent-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Easy Booking</h3>
+              <h3 className="mb-3 text-xl font-semibold text-gray-800">Easy Booking</h3>
               <p className="text-gray-600">
                 Simple, secure booking process with instant confirmation and flexible options
               </p>
@@ -104,10 +104,10 @@ const Home: React.FC = () => {
 
       {/* Featured Hotels */}
       <section className="py-16 bg-background-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              <h2 className="mb-4 text-3xl font-bold text-gray-800 md:text-4xl">
                 Featured Hotels
               </h2>
               <p className="text-xl text-gray-600">
@@ -116,41 +116,41 @@ const Home: React.FC = () => {
             </div>
             <Link
               to="/hotels"
-              className="hidden md:flex items-center space-x-2 bg-primary-600 text-white px-6 py-3 rounded-md hover:bg-primary-700 transition-colors"
+              className="items-center hidden px-6 py-3 space-x-2 text-white transition-colors rounded-md md:flex bg-primary-600 hover:bg-primary-700"
             >
               <span>View All Hotels</span>
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i} className="bg-white rounded-lg shadow-md h-80 animate-pulse">
-                  <div className="bg-gray-300 h-48 rounded-t-lg"></div>
+                  <div className="h-48 bg-gray-300 rounded-t-lg"></div>
                   <div className="p-4 space-y-3">
-                    <div className="bg-gray-300 h-4 rounded"></div>
-                    <div className="bg-gray-300 h-3 rounded w-2/3"></div>
-                    <div className="bg-gray-300 h-3 rounded w-1/2"></div>
+                    <div className="h-4 bg-gray-300 rounded"></div>
+                    <div className="w-2/3 h-3 bg-gray-300 rounded"></div>
+                    <div className="w-1/2 h-3 bg-gray-300 rounded"></div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {featuredHotels.map((hotel: any) => (
                   <HotelCard key={hotel.id} hotel={hotel} />
                 ))}
               </div>
               
-              <div className="text-center mt-8 md:hidden">
+              <div className="mt-8 text-center md:hidden">
                 <Link
                   to="/hotels"
-                  className="inline-flex items-center space-x-2 bg-primary-600 text-white px-6 py-3 rounded-md hover:bg-primary-700 transition-colors"
+                  className="inline-flex items-center px-6 py-3 space-x-2 text-white transition-colors rounded-md bg-primary-600 hover:bg-primary-700"
                 >
                   <span>View All Hotels</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </>
@@ -160,23 +160,23 @@ const Home: React.FC = () => {
 
       {/* CTA Section */}
       <section className="py-16 bg-primary-600">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+        <div className="max-w-4xl px-4 mx-auto text-center sm:px-6 lg:px-8">
+          <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
             Ready to Start Your Journey?
           </h2>
-          <p className="text-xl text-primary-100 mb-8">
+          <p className="mb-8 text-xl text-primary-100">
             Join thousands of satisfied travelers who trust PearlStay for their perfect getaway
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Link
               to="/hotels"
-              className="bg-white text-primary-600 px-8 py-3 rounded-md font-medium hover:bg-gray-100 transition-colors"
+              className="px-8 py-3 font-medium transition-colors bg-white rounded-md text-primary-600 hover:bg-gray-100"
             >
               Browse Hotels
             </Link>
             <Link
               to="/register"
-              className="bg-accent-500 text-white px-8 py-3 rounded-md font-medium hover:bg-accent-600 transition-colors"
+              className="px-8 py-3 font-medium text-white transition-colors rounded-md bg-accent-500 hover:bg-accent-600"
             >
               Create Account
             </Link>
