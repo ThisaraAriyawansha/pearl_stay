@@ -1,15 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Star, Wifi, Car, Utensils, Dumbbell, ArrowLeft } from 'lucide-react';
-import RoomCard from '../../components/Room/RoomCard';
+import { MapPin, Star, Wifi, Car, Utensils, Dumbbell, ArrowLeft, Users, Bed, Square, Calendar } from 'lucide-react';
 import axios from 'axios';
+import RoomCard from '../../components/Room/RoomCard';
+
+interface Room {
+  id: number;
+  name: string;
+  price_per_night: string; // Changed to string to match JSON
+  adult_price: string; // Changed to string to match JSON
+  total_room: number;
+  size: string;
+  bed_type: string;
+  description: string;
+  images: string[];
+}
+
+interface Hotel {
+  id: number;
+  name: string;
+  location: string;
+  description: string;
+  cover_image: string;
+  logo: string; // Added to match JSON
+  rooms: Room[];
+}
 
 const HotelSingle: React.FC = () => {
-  const { id } = useParams();
-  const [hotel, setHotel] = useState<any>(null);
-  const [rooms, setRooms] = useState([]);
+  const { id } = useParams<{ id: string }>();
+  const [hotel, setHotel] = useState<Hotel | null>(null);
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
+  const [roomsLoading, setRoomsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
 
   useEffect(() => {
     if (id) {
@@ -18,9 +43,10 @@ const HotelSingle: React.FC = () => {
   }, [id]);
 
   const fetchHotelDetails = async () => {
+    setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/hotels/${id}`);
-      setHotel(response.data.hotel);
+      const response = await axios.get(`http://localhost:5000/api/roomcard/${id}/rooms`);
+      setHotel(response.data);
       setRooms(response.data.rooms);
     } catch (error) {
       console.error('Error fetching hotel details:', error);
@@ -29,18 +55,54 @@ const HotelSingle: React.FC = () => {
     }
   };
 
+  const fetchHotelRooms = async (availabilityCheck = false) => {
+    if (!id) return;
+
+    setRoomsLoading(true);
+    try {
+      let url = `http://localhost:5000/api/roomcard/${id}/rooms`;
+      if (availabilityCheck && checkIn && checkOut) {
+        url = `http://localhost:5000/api/roomcard/${id}/rooms/available?check_in=${checkIn}&check_out=${checkOut}`;
+      }
+      const response = await axios.get(url);
+      setRooms(response.data.rooms || response.data); // Handle both combined and rooms-only responses
+    } catch (error) {
+      console.error('Error fetching hotel rooms:', error);
+    } finally {
+      setRoomsLoading(false);
+    }
+  };
+
+  const handleDateFilter = () => {
+    if (checkIn && checkOut) {
+      fetchHotelRooms(true);
+    } else {
+      fetchHotelRooms(false);
+    }
+  };
+
+  const clearDateFilter = () => {
+    setCheckIn('');
+    setCheckOut('');
+    fetchHotelRooms(false);
+  };
+
   const handleImageError = () => {
     setImageError(true);
   };
 
-  // Get image URL with fallback
   const getImageUrl = () => {
-    if (imageError || !hotel.cover_image) {
+    if (imageError || !hotel?.cover_image) {
       return 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=1920';
     }
-    
-    // Use the direct URL to your server
     return `http://localhost:5000/uploads/${hotel.cover_image}`;
+  };
+
+  const getRoomImageUrl = (roomImages: string[]) => {
+    if (roomImages?.length > 0 && roomImages[0]) {
+      return `http://localhost:5000${roomImages[0]}`;
+    }
+    return 'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800';
   };
 
   if (loading) {

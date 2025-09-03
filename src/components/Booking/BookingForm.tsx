@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 
-
 interface Room {
   id: number;
   name: string;
@@ -173,7 +172,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ room, onBookingSuccess }) => 
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Total Price:</span>
               <div className="flex items-center space-x-1">
-                <DollarSign className="w-4 h-4 text-primary-600" />
                 <span className="text-xl font-bold text-primary-600">
                   {calculating ? 'Calculating...' : `$${totalPrice.toFixed(2)}`}
                 </span>

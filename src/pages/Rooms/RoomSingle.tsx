@@ -29,7 +29,7 @@ const RoomSingle: React.FC = () => {
 
   const handleBookingSuccess = () => {
     alert('Booking successful! You will be redirected to your dashboard.');
-    window.location.href = '/dashboard/customer/bookings';
+    window.location.href = '/dashboard/customer';
   };
 
   if (loading) {
