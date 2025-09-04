@@ -45,7 +45,7 @@ const Navbar: React.FC = () => {
   }, [isHomeRoute]);
 
   return (
-    <nav className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-2 lg:py-4 flex justify-between items-center shadow-sm transition-all duration-300 rounded-2xl max-w-6xl w-[90%] font-sans ${isHomeRoute && !isScrolled ? 'bg-transparent' : 'bg-white'}`}>
+    <nav className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-2 lg:py-4 flex justify-between items-center shadow-sm transition-all duration-300 rounded-2xl max-w-6xl w-[90%] font-sans ${isHomeRoute && !isScrolled ? 'bg-transparent backdrop-blur-sm' : 'bg-white'}`}>
       <div className="flex items-center">
         <Link to="/" className="flex items-center">
           <img src="/plogo-Picsart-AiImageEnhancer.png" alt="PearlStay Logo" className="w-auto h-8" />
@@ -172,7 +172,14 @@ const Navbar: React.FC = () => {
       {/* Mobile Navigation */}
       {isOpen && (
         <div className="md:hidden absolute top-full left-1/2 transform -translate-x-1/2 w-[90%] max-w-6xl">
-          <div className="px-2 pt-2 pb-3 space-y-1 bg-white border shadow-sm sm:px-3 rounded-b-2xl">
+            <div
+              className={`px-3 pt-2 pb-3 space-y-1 border shadow-sm rounded-2xl transition-all duration-300 ${
+                isHomeRoute && !isScrolled
+                  ? 'bg-white' 
+                  : 'bg-white'
+              }`}
+            >
+          
             <Link
               to="/"
               className="block px-3 py-2 text-base font-medium text-gray-700 transition-colors rounded-md hover:text-primary-600 hover:bg-primary-50"

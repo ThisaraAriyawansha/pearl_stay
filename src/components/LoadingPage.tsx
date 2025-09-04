@@ -44,16 +44,17 @@ const LoadingPage: React.FC<LoadingPageProps> = ({ onComplete }) => {
                       : 'opacity-0 transform translate-y-4'
                   }`}
                 >
-                  <h1
-                    className="text-5xl font-semibold tracking-wide text-primary-500"
-                    style={{
-                      fontFamily:
-                        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                      letterSpacing: '0.2em', // adjust for more or less spacing
-                    }}
-                  >
-                    PearlStay
-                  </h1>
+                <h1
+                  className="text-3xl font-semibold tracking-wide sm:text-4xl md:text-4xl lg:text-5xl xl:text-5xl text-primary-500"
+                  style={{
+                    fontFamily:
+                      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    letterSpacing: '0.2em', // adjust for more or less spacing
+                  }}
+                >
+                  PearlStay
+                </h1>
+
                 </div>
 
         
