@@ -55,9 +55,18 @@ const Home: React.FC = () => {
 
       {/* Features Section */}
       <section className="py-16 bg-white">
-        
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="mb-12 text-center">
+          {/* Header with Logo */}
+          <div className="relative mb-12 text-center">
+            {/* Logo positioned on the right */}
+            <div className="absolute top-0 right-0 hidden lg:block">
+              <img 
+                src="/plogo-Picsart-AiImageEnhancer.png" 
+                alt="PearlStay Logo" 
+                className="object-contain w-24 h-24 opacity-80"
+              />
+            </div>
+            
             <h2 className="mb-4 text-3xl font-bold text-gray-800 md:text-4xl">
               Why Choose PearlStay?
             </h2>
@@ -66,6 +75,7 @@ const Home: React.FC = () => {
             </p>
           </div>
 
+          {/* Features Grid */}
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div className="p-6 text-center transition-shadow rounded-lg hover:shadow-lg">
               <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-primary-100">
@@ -76,7 +86,7 @@ const Home: React.FC = () => {
                 Carefully curated hotels that meet our high standards for comfort and service
               </p>
             </div>
-
+            
             <div className="p-6 text-center transition-shadow rounded-lg hover:shadow-lg">
               <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-secondary-100">
                 <MapPin className="w-8 h-8 text-secondary-600" />
@@ -86,7 +96,7 @@ const Home: React.FC = () => {
                 Access to beautiful properties in the most sought-after destinations worldwide
               </p>
             </div>
-
+            
             <div className="p-6 text-center transition-shadow rounded-lg hover:shadow-lg">
               <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-accent-100">
                 <Calendar className="w-8 h-8 text-accent-600" />
