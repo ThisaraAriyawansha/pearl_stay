@@ -6,6 +6,7 @@ import Footer from './components/Layout/Footer';
 import DashboardLayout from './components/Dashboard/DashboardLayout';
 
 import LoadingPage from './components/LoadingPage';
+import ScrollToTop from './components/ScrollToTop';
 
 // Pages
 import Home from './pages/Home';
@@ -24,12 +25,18 @@ import OwnerDashboard from './pages/Dashboard/Owner/OwnerDashboard';
 import CustomerDashboard from './pages/Dashboard/Customer/CustomerDashboard';
 
 
-// Home Page Wrapper with Loading
+// Home Page Wrapper with Loading (only first time)
 const HomeWithLoading = () => {
-  const [showLoading, setShowLoading] = useState(true);
+  const [showLoading, setShowLoading] = useState(() => {
+    // Check if user has visited before in this session
+    const hasVisited = sessionStorage.getItem('pearlstay-visited');
+    return !hasVisited; // Show loading only if not visited before
+  });
 
   const handleLoadingComplete = () => {
     setShowLoading(false);
+    // Mark as visited for this session
+    sessionStorage.setItem('pearlstay-visited', 'true');
   };
 
   return (
@@ -75,6 +82,7 @@ const AppContent: React.FC = () => {
 
   return (
     <Router>
+      <ScrollToTop />
       <div className="min-h-screen bg-background-100">
         <Routes>
           {/* Public Routes */}
