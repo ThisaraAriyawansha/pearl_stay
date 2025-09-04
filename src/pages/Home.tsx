@@ -4,6 +4,7 @@ import { Star, MapPin, Calendar, Users, ArrowRight } from 'lucide-react';
 import SearchBar from '../components/Common/SearchBar';
 import HotelCard from '../components/Hotel/HotelCard';
 import axios from 'axios';
+import Hero from './Hero';
 
 const Home: React.FC = () => {
   const [featuredHotels, setFeaturedHotels] = useState([]);
@@ -30,26 +31,12 @@ const Home: React.FC = () => {
   };
 
   return (
+    <div> 
+      <Hero/>
     <div className="pt-16">
-      {/* Hero Section */}
-      <section className="relative flex items-center justify-center h-screen">
-        <div 
-          className="absolute inset-0 bg-center bg-no-repeat bg-cover"
-          style={{
-            backgroundImage: 'url(https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=1920)'
-          }}
-        />
-        <div className="absolute inset-0 bg-black bg-opacity-50" />
-        
+      <section className="relative flex items-center justify-center mb-16">
+
         <div className="relative z-10 max-w-4xl px-4 mx-auto text-center text-white">
-          <h1 className="mb-6 text-5xl font-bold md:text-6xl">
-            Discover Your Perfect
-            <span className="block text-accent-300">Stay</span>
-          </h1>
-          <p className="mb-8 text-xl text-gray-200 md:text-2xl">
-            Experience luxury and comfort at the world's finest hotels
-          </p>
-          
           <div className="max-w-4xl mx-auto">
             <SearchBar onSearch={handleSearch} />
           </div>
@@ -183,6 +170,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+    </div>
     </div>
   );
 };

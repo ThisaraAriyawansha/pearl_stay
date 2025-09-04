@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
         const scrollPosition = window.scrollY;
         const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
         const scrollPercentage = (scrollPosition / windowHeight) * 100;
-        setIsScrolled(scrollPercentage > 30);
+        setIsScrolled(scrollPercentage > 10);
       };
 
       window.addEventListener('scroll', handleScroll);
