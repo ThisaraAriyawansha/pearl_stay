@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Navbar from './components/Layout/Navbar';
 import Footer from './components/Layout/Footer';
 import DashboardLayout from './components/Dashboard/DashboardLayout';
+
+import LoadingPage from './components/LoadingPage';
 
 // Pages
 import Home from './pages/Home';
@@ -20,6 +22,26 @@ import Contact from './pages/Contact';
 import AdminDashboard from './pages/Dashboard/Admin/AdminDashboard';
 import OwnerDashboard from './pages/Dashboard/Owner/OwnerDashboard';
 import CustomerDashboard from './pages/Dashboard/Customer/CustomerDashboard';
+
+
+// Home Page Wrapper with Loading
+const HomeWithLoading = () => {
+  const [showLoading, setShowLoading] = useState(true);
+
+  const handleLoadingComplete = () => {
+    setShowLoading(false);
+  };
+
+  return (
+    <>
+      {showLoading && <LoadingPage onComplete={handleLoadingComplete} />}
+      <div className={showLoading ? 'opacity-0' : 'opacity-100 transition-opacity duration-500'}>
+        <Home />
+      </div>
+    </>
+  );
+};
+
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRoles?: string[] }> = ({ 
@@ -62,7 +84,7 @@ const AppContent: React.FC = () => {
               <>
                 <Navbar />
                 <Routes>
-                  <Route path="/" element={<Home />} />
+                  <Route path="/" element={<HomeWithLoading />} />
                   <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
                   <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
                   <Route path="/hotels" element={<HotelsList />} />
