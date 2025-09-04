@@ -33,18 +33,29 @@ const Home: React.FC = () => {
   return (
     <div> 
       <Hero/>
-    <div className="pt-16">
-      <section className="relative flex items-center justify-center mb-16">
-
-        <div className="relative z-10 max-w-4xl px-4 mx-auto text-center text-white">
-          <div className="max-w-4xl mx-auto">
-            <SearchBar onSearch={handleSearch} />
+    <div className="pt-1 bg-white">
+      
+        <section className="relative flex items-center justify-center mb-16 overflow-hidden bg-white">
+          
+          {/* Add this animated circles background */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute w-32 h-32 rounded-full opacity-20 top-10 left-10 circle-1"></div>
+            <div className="absolute w-24 h-24 rounded-full opacity-25 top-20 right-20 circle-2"></div>
+            <div className="absolute w-40 h-40 rounded-full opacity-15 bottom-10 left-1/4 circle-3"></div>
+            <div className="absolute w-20 h-20 rounded-full opacity-30 bottom-20 right-10 circle-4"></div>
+            <div className="absolute rounded-full w-36 h-36 opacity-18 top-1/2 right-1/3 circle-5"></div>
           </div>
-        </div>
-      </section>
+          
+          <div className="relative z-10 max-w-4xl px-4 mx-auto mt-16 mb-16 text-center text-white">
+            <div className="max-w-4xl mx-auto">
+              <SearchBar onSearch={handleSearch} />
+            </div>
+          </div>
+        </section>
 
       {/* Features Section */}
       <section className="py-16 bg-white">
+        
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-3xl font-bold text-gray-800 md:text-4xl">

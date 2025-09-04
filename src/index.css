@@ -1,3 +1,48 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.circle-1 {
+  animation: float 6s ease-in-out infinite;
+  background: linear-gradient(135deg, #747293, #908ea9);
+}
+
+.circle-2 {
+  animation: float 8s ease-in-out infinite reverse;
+  background: linear-gradient(135deg, #acaabe, #c7c7d4);
+  animation-delay: -2s;
+}
+
+.circle-3 {
+  animation: float 10s ease-in-out infinite;
+  background: linear-gradient(135deg, #908ea9, #acaabe);
+  animation-delay: -4s;
+}
+
+.circle-4 {
+  animation: float 7s ease-in-out infinite reverse;
+  background: linear-gradient(135deg, #c7c7d4, #e3e3e9);
+  animation-delay: -1s;
+}
+
+.circle-5 {
+  animation: float 9s ease-in-out infinite;
+  background: linear-gradient(135deg, #747293, #c7c7d4);
+  animation-delay: -3s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) scale(1);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px) scale(1.1);
+  }
+  50% {
+    transform: translateY(-10px) translateX(-15px) scale(0.9);
+  }
+  75% {
+    transform: translateY(-25px) translateX(5px) scale(1.05);
+  }
+}
