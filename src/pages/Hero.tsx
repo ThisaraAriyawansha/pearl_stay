@@ -77,7 +77,7 @@ const handleScroll = () => {
         {/* Animated heading */}
         <div className="mb-6 overflow-hidden">
           <h1 
-            className={`text-5xl sm:text-6xl lg:text-7xl font-light text-white leading-tight transition-all duration-1000 ease-out ${
+            className={`text-3xl sm:text-5xl lg:text-7xl font-light text-white leading-tight transition-all duration-1000 ease-out ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
             }`}
             style={{ 
@@ -94,10 +94,11 @@ const handleScroll = () => {
           </h1>
         </div>
 
+
         {/* Animated subtitle */}
         <div className="mb-12 overflow-hidden">
           <p 
-            className={`text-xl sm:text-2xl text-gray-100 font-light max-w-3xl mx-auto leading-relaxed transition-all duration-1000 delay-300 ease-out ${
+            className={`text-base sm:text-xl md:text-2xl text-gray-100 font-light max-w-3xl mx-auto leading-relaxed transition-all duration-1000 delay-300 ease-out ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
             }`}
             style={{ 
@@ -109,40 +110,41 @@ const handleScroll = () => {
           </p>
         </div>
 
+
         {/* Enhanced trust indicators */}
         <div 
-          className={`flex flex-wrap items-center justify-center gap-6 sm:gap-8 mt-8 text-sm text-gray-200 transition-all duration-1000 delay-700 ease-out ${
+          className={`flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-6 sm:mt-8 text-xs sm:text-sm text-gray-200 transition-all duration-1000 delay-700 ease-out ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
           }`}
         >
-          <div className="flex items-center px-4 py-2 space-x-2 rounded-full bg-white/10 backdrop-blur-sm">
+          <div className="flex items-center px-3 py-1 space-x-1 rounded-full sm:px-4 sm:py-2 sm:space-x-2 bg-white/10 backdrop-blur-sm">
             <div className="w-2 h-2 rounded-full shadow-lg bg-emerald-400 animate-pulse shadow-emerald-400/50"></div>
-            <span className="font-medium">50k+ Happy Travelers</span>
+            <span className="text-xs font-medium sm:text-sm">50k+ Happy Travelers</span>
           </div>
-          <div className="flex items-center px-4 py-2 space-x-2 rounded-full bg-white/10 backdrop-blur-sm">
+          <div className="flex items-center px-3 py-1 space-x-1 rounded-full sm:px-4 sm:py-2 sm:space-x-2 bg-white/10 backdrop-blur-sm">
             <div className="w-2 h-2 bg-yellow-400 rounded-full shadow-lg animate-pulse shadow-yellow-400/50"></div>
-            <span className="font-medium">5-Star Service</span>
+            <span className="text-xs font-medium sm:text-sm">5-Star Service</span>
           </div>
-          <div className="flex items-center px-4 py-2 space-x-2 rounded-full bg-white/10 backdrop-blur-sm">
+          <div className="flex items-center px-3 py-1 space-x-1 rounded-full sm:px-4 sm:py-2 sm:space-x-2 bg-white/10 backdrop-blur-sm">
             <div className="w-2 h-2 bg-purple-400 rounded-full shadow-lg animate-pulse shadow-purple-400/50"></div>
-            <span className="font-medium">Instant Booking</span>
+            <span className="text-xs font-medium sm:text-sm">Instant Booking</span>
           </div>
         </div>
       </div>
 
       {/* Enhanced scroll indicator with click handler */}
       <div 
-        className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 transition-all duration-1000 delay-1000 ease-out cursor-pointer ${
+        className={`absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 transition-all duration-1000 delay-1000 ease-out cursor-pointer ${
           isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
         }`}
-        onClick={handleScroll} // Add click handler
+        onClick={handleScroll} // click handler
       >
-        <div className="flex flex-col items-center space-y-2 text-gray-200">
-          <span className="text-sm font-light" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
+        <div className="flex flex-col items-center space-y-1 text-gray-200 sm:space-y-2">
+          <span className="text-xs font-light sm:text-sm" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
             Scroll to explore
           </span>
-          <div className="flex justify-center w-6 h-10 border-2 rounded-full border-white/50 backdrop-blur-sm">
-            <div className="w-1 h-3 mt-2 rounded-full shadow-lg bg-white/80 animate-bounce"></div>
+          <div className="flex justify-center w-5 h-8 border-2 rounded-full sm:w-6 sm:h-10 border-white/50 backdrop-blur-sm">
+            <div className="w-1 h-2 mt-1 rounded-full shadow-lg sm:h-3 sm:mt-2 bg-white/80 animate-bounce"></div>
           </div>
         </div>
       </div>
