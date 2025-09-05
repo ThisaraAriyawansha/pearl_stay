@@ -5,6 +5,8 @@ import SearchBar from '../components/Common/SearchBar';
 import HotelCard from '../components/Hotel/HotelCard';
 import axios from 'axios';
 import Hero from './Hero';
+import Banner1 from './ShowcaseSection';
+
 
 const Home: React.FC = () => {
   const [featuredHotels, setFeaturedHotels] = useState([]);
@@ -46,15 +48,16 @@ const Home: React.FC = () => {
             <div className="absolute rounded-full w-36 h-36 opacity-18 top-1/2 right-1/3 circle-5"></div>
           </div>
           
-          <div className="relative z-10 max-w-4xl px-4 mx-auto mt-16 mb-16 text-center text-white">
+          <div className="relative z-10 max-w-4xl px-4 mx-auto mt-24 mb-2 text-center text-white sm:mb-24">
             <div className="max-w-4xl mx-auto">
               <SearchBar onSearch={handleSearch} />
             </div>
           </div>
+
         </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-white">
+      <section className="mb-16 bg-white">
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           {/* Header with Logo */}
           <div className="relative mb-12 text-center">
@@ -109,7 +112,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
-
+      <Banner1/>
       {/* Featured Hotels */}
       <section className="py-16 bg-background-100">
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
