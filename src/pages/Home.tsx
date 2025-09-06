@@ -7,6 +7,7 @@ import axios from 'axios';
 import Hero from './Hero';
 import Banner1 from './ShowcaseSection';
 import Gallary from './Gallery';
+import Detail from './InnovationSection';
 
 
 
@@ -197,6 +198,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+      <Detail/>
     </div>
     </div>
   );
