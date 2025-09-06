@@ -121,7 +121,7 @@ const Home: React.FC = () => {
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h2 className="mb-4 text-3xl font-bold text-gray-800 md:text-4xl">
+              <h2 className="mb-4 text-2xl font-light sm:text-3xl md:text-4xl lg:text-5xl">
                 Featured Hotels
               </h2>
               <p className="text-xl text-gray-600">
@@ -174,30 +174,32 @@ const Home: React.FC = () => {
       <Gallary/>
 
       {/* CTA Section */}
-      <section className="py-16 bg-primary-600">
-        <div className="max-w-4xl px-4 mx-auto text-center sm:px-6 lg:px-8">
-          <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
-            Ready to Start Your Journey?
-          </h2>
-          <p className="mb-8 text-xl text-primary-100">
-            Join thousands of satisfied travelers who trust PearlStay for their perfect getaway
-          </p>
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Link
-              to="/hotels"
-              className="px-8 py-3 font-medium transition-colors bg-white rounded-md text-primary-600 hover:bg-gray-100"
-            >
-              Browse Hotels
-            </Link>
-            <Link
-              to="/register"
-              className="px-8 py-3 font-medium text-white transition-colors rounded-md bg-accent-500 hover:bg-accent-600"
-            >
-              Create Account
-            </Link>
+        <section 
+          className="py-16 bg-gradient-to-r from-[#3f3f56] via-[#242432] to-[#5a567a]"
+        >
+          <div className="max-w-4xl px-4 mx-auto text-center sm:px-6 lg:px-8">
+            <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
+              Ready to Start Your Journey?
+            </h2>
+            <p className="mb-8 text-xl text-gray-100">
+              Join thousands of satisfied travelers who trust PearlStay for their perfect Sri Lankan getaway.
+            </p>
+            <div className="flex flex-col justify-center gap-4 sm:flex-row">
+              <Link
+                to="/hotels"
+                className="px-8 py-3 font-medium transition-colors bg-white rounded-md text-[#5a567a] hover:bg-gray-100"
+              >
+                Browse Hotels
+              </Link>
+              <Link
+                to="/register"
+                className="px-8 py-3 font-medium text-white transition-colors rounded-md bg-[#acaabe] hover:bg-[#908ea9]"
+              >
+                Create Account
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       <Detail/>
     </div>
     </div>
