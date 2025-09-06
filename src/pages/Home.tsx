@@ -6,6 +6,8 @@ import HotelCard from '../components/Hotel/HotelCard';
 import axios from 'axios';
 import Hero from './Hero';
 import Banner1 from './ShowcaseSection';
+import Gallary from './Gallery';
+
 
 
 const Home: React.FC = () => {
@@ -168,6 +170,7 @@ const Home: React.FC = () => {
           )}
         </div>
       </section>
+      <Gallary/>
 
       {/* CTA Section */}
       <section className="py-16 bg-primary-600">
