@@ -98,6 +98,13 @@ const HotelSingle: React.FC = () => {
     return `http://localhost:5000/uploads/${hotel.cover_image}`;
   };
 
+    const getImageUrlLogo = () => {
+    if (imageError || !hotel?.logo) {
+      return 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=1920';
+    }
+    return `http://localhost:5000/uploads/${hotel.logo}`;
+  };
+
   const getRoomImageUrl = (roomImages: string[]) => {
     if (roomImages?.length > 0 && roomImages[0]) {
       return `http://localhost:5000${roomImages[0]}`;
@@ -147,7 +154,7 @@ const HotelSingle: React.FC = () => {
 
   return (
     <div className="min-h-screen pt-16 bg-background-100">
-      <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div className="px-4 py-8 mx-auto mt-8 max-w-7xl sm:px-6 lg:px-8">
         {/* Back button */}
         <Link
           to="/hotels"
@@ -165,9 +172,12 @@ const HotelSingle: React.FC = () => {
             className="object-cover w-full h-full"
             onError={handleImageError}
           />
+
+
+          
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           <div className="absolute text-white bottom-6 left-6">
-            <h1 className="mb-2 text-3xl font-bold md:text-4xl">{hotel.name}</h1>
+            <h1 className="text-2xl font-light sm:text-3xl md:text-4xl lg:text-5xl">{hotel.name}</h1>
             <div className="flex items-center space-x-2">
               <MapPin className="w-5 h-5" />
               <span className="text-lg">{hotel.location}</span>
@@ -175,6 +185,13 @@ const HotelSingle: React.FC = () => {
           </div>
         </div>
 
+
+                    <img
+            src={getImageUrlLogo()}
+            alt={hotel.name}
+            className="object-cover w-full h-full"
+            onError={handleImageError}
+          />
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Hotel Details */}
           <div className="lg:col-span-2">
