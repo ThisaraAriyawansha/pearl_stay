@@ -10,7 +10,9 @@ const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
 
-  const isHomeRoute = location.pathname === '/';
+  // Include /hotels, /rooms, /about, and /contact in the blue background effect
+  const routesWithBlueBg = ['/', '/hotels', '/rooms', '/about', '/contact'];
+  const isBlueBgRoute = routesWithBlueBg.includes(location.pathname);
   const isActive = (path: string) => location.pathname === path;
 
   const handleLogout = () => {
@@ -29,7 +31,7 @@ const Navbar: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isHomeRoute) {
+    if (isBlueBgRoute) {
       const handleScroll = () => {
         const scrollPosition = window.scrollY;
         const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -42,10 +44,10 @@ const Navbar: React.FC = () => {
     } else {
       setIsScrolled(false);
     }
-  }, [isHomeRoute]);
+  }, [isBlueBgRoute]);
 
   return (
-    <nav className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-2 lg:py-4 flex justify-between items-center shadow-sm transition-all duration-300 rounded-2xl max-w-6xl w-[90%] font-sans ${isHomeRoute && !isScrolled ? 'bg-transparent backdrop-blur-sm' : 'bg-white'}`}>
+    <nav className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-2 lg:py-4 flex justify-between items-center shadow-sm transition-all duration-300 rounded-2xl max-w-6xl w-[90%] font-sans ${isBlueBgRoute && !isScrolled ? 'bg-transparent backdrop-blur-sm' : 'bg-white'}`}>
       <div className="flex items-center">
         <Link to="/" className="flex items-center">
           <img src="/plogo-Picsart-AiImageEnhancer.png" alt="PearlStay Logo" className="w-auto h-8" />
@@ -59,8 +61,8 @@ const Navbar: React.FC = () => {
           to="/"
           className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
             isActive('/')
-              ? `${isHomeRoute && !isScrolled ? 'text-white bg-transparent' : 'text-primary-600 bg-primary-50'}`
-              : `${isHomeRoute && !isScrolled ? 'text-white' : 'text-gray-700'} hover:text-primary-600`
+              ? `${isBlueBgRoute && !isScrolled ? 'text-white bg-transparent' : 'text-primary-600 bg-primary-50'}`
+              : `${isBlueBgRoute && !isScrolled ? 'text-white' : 'text-gray-700'} hover:text-primary-600`
           }`}
         >
           Home
@@ -69,8 +71,8 @@ const Navbar: React.FC = () => {
           to="/hotels"
           className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
             isActive('/hotels')
-              ? `${isHomeRoute && !isScrolled ? 'text-white bg-transparent' : 'text-primary-600 bg-primary-50'}`
-              : `${isHomeRoute && !isScrolled ? 'text-white' : 'text-gray-700'} hover:text-primary-600`
+              ? `${isBlueBgRoute && !isScrolled ? 'text-white bg-transparent' : 'text-primary-600 bg-primary-50'}`
+              : `${isBlueBgRoute && !isScrolled ? 'text-white' : 'text-gray-700'} hover:text-primary-600`
           }`}
         >
           Hotels
@@ -79,8 +81,8 @@ const Navbar: React.FC = () => {
           to="/rooms"
           className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
             isActive('/rooms')
-              ? `${isHomeRoute && !isScrolled ? 'text-white bg-transparent' : 'text-primary-600 bg-primary-50'}`
-              : `${isHomeRoute && !isScrolled ? 'text-white' : 'text-gray-700'} hover:text-primary-600`
+              ? `${isBlueBgRoute && !isScrolled ? 'text-white bg-transparent' : 'text-primary-600 bg-primary-50'}`
+              : `${isBlueBgRoute && !isScrolled ? 'text-white' : 'text-gray-700'} hover:text-primary-600`
           }`}
         >
           Rooms
@@ -89,8 +91,8 @@ const Navbar: React.FC = () => {
           to="/about"
           className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
             isActive('/about')
-              ? `${isHomeRoute && !isScrolled ? 'text-white bg-transparent' : 'text-primary-600 bg-primary-50'}`
-              : `${isHomeRoute && !isScrolled ? 'text-white' : 'text-gray-700'} hover:text-primary-600`
+              ? `${isBlueBgRoute && !isScrolled ? 'text-white bg-transparent' : 'text-primary-600 bg-primary-50'}`
+              : `${isBlueBgRoute && !isScrolled ? 'text-white' : 'text-gray-700'} hover:text-primary-600`
           }`}
         >
           About
@@ -99,8 +101,8 @@ const Navbar: React.FC = () => {
           to="/contact"
           className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
             isActive('/contact')
-              ? `${isHomeRoute && !isScrolled ? 'text-white bg-transparent' : 'text-primary-600 bg-primary-50'}`
-              : `${isHomeRoute && !isScrolled ? 'text-white' : 'text-gray-700'} hover:text-primary-600`
+              ? `${isBlueBgRoute && !isScrolled ? 'text-white bg-transparent' : 'text-primary-600 bg-primary-50'}`
+              : `${isBlueBgRoute && !isScrolled ? 'text-white' : 'text-gray-700'} hover:text-primary-600`
           }`}
         >
           Contact
@@ -111,7 +113,7 @@ const Navbar: React.FC = () => {
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
               className={`flex items-center px-3 py-2 space-x-2 text-sm font-medium transition-colors rounded-md ${
-                isHomeRoute && !isScrolled ? 'text-white' : 'text-gray-700'
+                isBlueBgRoute && !isScrolled ? 'text-white' : 'text-gray-700'
               } hover:text-primary-600`}
             >
               <User className="w-4 h-4" />
@@ -142,7 +144,7 @@ const Navbar: React.FC = () => {
             <Link
               to="/login"
               className={`px-3 py-2 text-sm font-medium transition-colors rounded-md ${
-                isHomeRoute && !isScrolled ? 'text-white' : 'text-gray-700'
+                isBlueBgRoute && !isScrolled ? 'text-white' : 'text-gray-700'
               } hover:text-primary-600`}
             >
               Login
@@ -162,7 +164,7 @@ const Navbar: React.FC = () => {
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={`${
-            isHomeRoute && !isScrolled ? 'text-white' : 'text-gray-700'
+            isBlueBgRoute && !isScrolled ? 'text-white' : 'text-gray-700'
           } hover:text-primary-600 focus:outline-none focus:text-primary-600`}
         >
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -172,14 +174,11 @@ const Navbar: React.FC = () => {
       {/* Mobile Navigation */}
       {isOpen && (
         <div className="md:hidden absolute top-full left-1/2 transform -translate-x-1/2 w-[90%] max-w-6xl">
-            <div
-              className={`px-3 pt-2 pb-3 space-y-1 border shadow-sm rounded-2xl transition-all duration-300 ${
-                isHomeRoute && !isScrolled
-                  ? 'bg-white' 
-                  : 'bg-white'
-              }`}
-            >
-          
+          <div
+            className={`px-3 pt-2 pb-3 space-y-1 border shadow-sm rounded-2xl transition-all duration-300 ${
+              isBlueBgRoute && !isScrolled ? 'bg-white' : 'bg-white'
+            }`}
+          >
             <Link
               to="/"
               className="block px-3 py-2 text-base font-medium text-gray-700 transition-colors rounded-md hover:text-primary-600 hover:bg-primary-50"
