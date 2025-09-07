@@ -39,50 +39,61 @@ const HotelsList: React.FC = () => {
   );
 
   return (
-    <div className="pt-16 min-h-screen bg-background-100">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-            Discover Amazing Hotels
-          </h1>
-          <p className="text-lg text-gray-600">
-            Find the perfect accommodation for your next adventure
-          </p>
-        </div>
-      </div>
+          <div
+            className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] flex items-center justify-center text-center text-white bg-cover bg-center"
+            style={{
+              backgroundImage: "url('/image/46190-hotel-malvivy-pool-interior-ocean-sea-houses-buildings-sky-sunset-3.jpg')",
+              backgroundAttachment: "fixed",
+            }}
+          >
+            {/* Dark overlay */}
+            <div className="absolute inset-0 bg-black/60"></div>
+            
+            <div className="relative z-10 max-w-4xl px-4 mx-auto">
+              <p className="mb-2 text-xs tracking-wide uppercase sm:text-sm md:text-base md:mb-3">
+                {`Find the perfect accommodation for your next adventure — from cozy boutique stays to luxurious beachfront resorts, tailored to your travel style and budget.`}
+              </p>
+
+              <div className="w-20 sm:w-24 md:w-32 h-[1px] bg-gray-300 mx-auto mb-3 md:mb-4"></div>
+              <h1 className="text-2xl font-light sm:text-3xl md:text-4xl lg:text-5xl">
+                Discover Amazing Hotels
+              </h1>
+            </div>
+          </div>
 
       {/* Search and Filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="p-6 mb-8 bg-white rounded-lg shadow-md">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Search className="absolute w-4 h-4 text-gray-400 left-3 top-3" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search hotels..."
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
 
             <div className="relative">
-              <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <MapPin className="absolute w-4 h-4 text-gray-400 left-3 top-3" />
               <input
                 type="text"
                 value={locationFilter}
                 onChange={(e) => setLocationFilter(e.target.value)}
                 placeholder="Filter by location..."
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
 
             <button
               onClick={handleSearch}
-              className="bg-primary-600 text-white px-6 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2"
+              className="flex items-center justify-center px-6 py-2 space-x-2 text-white transition-colors rounded-md bg-primary-600 hover:bg-primary-700"
             >
-              <Filter className="h-4 w-4" />
+              <Filter className="w-4 h-4" />
               <span>Apply Filters</span>
             </button>
           </div>
@@ -90,14 +101,14 @@ const HotelsList: React.FC = () => {
 
         {/* Results */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="bg-white rounded-lg shadow-md h-80 animate-pulse">
-                <div className="bg-gray-300 h-48 rounded-t-lg"></div>
+                <div className="h-48 bg-gray-300 rounded-t-lg"></div>
                 <div className="p-4 space-y-3">
-                  <div className="bg-gray-300 h-4 rounded"></div>
-                  <div className="bg-gray-300 h-3 rounded w-2/3"></div>
-                  <div className="bg-gray-300 h-3 rounded w-1/2"></div>
+                  <div className="h-4 bg-gray-300 rounded"></div>
+                  <div className="w-2/3 h-3 bg-gray-300 rounded"></div>
+                  <div className="w-1/2 h-3 bg-gray-300 rounded"></div>
                 </div>
               </div>
             ))}
@@ -110,16 +121,16 @@ const HotelsList: React.FC = () => {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredHotels.map((hotel: any) => (
                 <HotelCard key={hotel.id} hotel={hotel} />
               ))}
             </div>
           </>
         ) : (
-          <div className="text-center py-12">
-            <div className="bg-white rounded-lg shadow-md p-8">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">No hotels found</h3>
+          <div className="py-12 text-center">
+            <div className="p-8 bg-white rounded-lg shadow-md">
+              <h3 className="mb-2 text-xl font-semibold text-gray-800">No hotels found</h3>
               <p className="text-gray-600">Try adjusting your search criteria</p>
             </div>
           </div>
