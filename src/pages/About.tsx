@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Award, Shield, Heart, Globe, Users, Star, TrendingUp, CheckCircle } from 'lucide-react';
+import { Award, Shield, Heart, Globe, Users, Star, TrendingUp, CheckCircle, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
+import { Link } from "react-router-dom";
 
 const About: React.FC = () => {
   const [isVisible, setIsVisible] = useState<Record<string, boolean>>({});
   const [counters, setCounters] = useState({ hotels: 0, guests: 0, countries: 0 });
   const [scrollY, setScrollY] = useState(0);
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -18,7 +20,9 @@ const About: React.FC = () => {
       { threshold: 0.1, rootMargin: '50px' }
     );
 
-    const elements = document.querySelectorAll('[id^="animate-"]');
+    const elements = document.querySelectorAll(
+      '[id^="animate-"], #animate-overlay, #animate-subtitle, #animate-divider, #animate-title, #animate-description'
+    );
     elements.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
@@ -36,7 +40,7 @@ const About: React.FC = () => {
   useEffect(() => {
     if (isVisible['animate-stats']) {
       const animateCounters = () => {
-        const targets = { hotels: 500, guests: 50000, countries: 30 };
+        const targets = { hotels: 100, guests: 5000, countries: 10 };
         const duration = 2000;
         const steps = 50;
         
@@ -60,6 +64,15 @@ const About: React.FC = () => {
       animateCounters();
     }
   }, [isVisible]);
+
+  // Auto-rotate testimonials
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTestimonial(prev => (prev + 1) % testimonials.length);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const features = [
     {
@@ -91,28 +104,37 @@ const About: React.FC = () => {
     { icon: CheckCircle, title: 'ISO 27001 Certified', subtitle: 'Security standards' }
   ];
 
-  const teamMembers = [
-    {
-      name: 'Sarah Johnson',
-      role: 'CEO & Founder',
-      image: 'https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?auto=compress&cs=tinysrgb&w=400'
-    },
-    {
-      name: 'Michael Chen',
-      role: 'CTO',
-      image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400'
-    },
-    {
-      name: 'Emily Rodriguez',
-      role: 'Head of Customer Success',
-      image: 'https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?auto=compress&cs=tinysrgb&w=400'
-    },
-    {
-      name: 'James Wilson',
-      role: 'Global Partnerships Director',
-      image: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=400'
-    }
-  ];
+  const testimonials = [
+  {
+    name: 'Amali Perera',
+    role: 'Luxury Traveler',
+    image: 'https://images.pexels.com/photos/712513/pexels-photo-712513.jpeg?auto=compress&cs=tinysrgb&w=400',
+    content: 'PearlStay made my trip to Galle Fort unforgettable. The boutique hotel they recommended had stunning ocean views and world-class service. Truly a luxury escape in Sri Lanka!',
+    rating: 5
+  },
+  {
+    name: 'Rohan de Silva',
+    role: 'Business Executive',
+    image: 'https://images.pexels.com/photos/3785077/pexels-photo-3785077.jpeg?auto=compress&cs=tinysrgb&w=400',
+    content: 'During my Colombo business trip, PearlStay arranged a hotel with great meeting facilities and a peaceful workspace. It saved me so much time and made my stay productive.',
+    rating: 5
+  },
+  {
+    name: 'Ishara Fernando',
+    role: 'Honeymooner',
+    image: 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=400',
+    content: 'Our honeymoon in Ella was magical. PearlStay found us a romantic hilltop villa surrounded by tea plantations, and they even organized a private candlelight dinner. Five stars!',
+    rating: 5
+  },
+  {
+    name: 'Malith Jayawardena',
+    role: 'Family Traveler',
+    image: 'https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?auto=compress&cs=tinysrgb&w=400',
+    content: 'Traveling with kids in Sri Lanka was so smooth thanks to PearlStay. We stayed at a family-friendly resort in Bentota with a kids’ pool and plenty of activities. Highly recommended!',
+    rating: 4
+  }
+];
+
 
   const values = [
     { icon: Star, title: 'Excellence', description: 'We strive for perfection in every detail of your travel experience.' },
@@ -120,20 +142,32 @@ const About: React.FC = () => {
     { icon: Heart, title: 'Passion', description: 'Our love for travel drives us to create magical moments for every guest.' }
   ];
 
+  const nextTestimonial = () => {
+    setCurrentTestimonial((currentTestimonial + 1) % testimonials.length);
+  };
+
+  const prevTestimonial = () => {
+    setCurrentTestimonial((currentTestimonial - 1 + testimonials.length) % testimonials.length);
+  };
+
+  const goToTestimonial = (index: number) => {
+    setCurrentTestimonial(index);
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section with Enhanced Animations */}
       <div
         className="relative w-full h-[400px] md:h-[500px] flex items-center justify-center text-center bg-cover bg-center overflow-hidden"
         style={{
-          backgroundImage: `url('./image/pexels-malindabandaralk-16508230.jpg')`,
+          backgroundImage: `url('./image/pexels-eslames1-32398175.jpg')`,
           backgroundAttachment: 'fixed',
           backgroundPosition: `center ${scrollY * 0.5}px`
         }}
       >
         {/* Animated overlay */}
         <div 
-          className="absolute inset-0 bg-black/40"
+          className="absolute inset-0 bg-black/30"
           id="animate-overlay"
           style={{
             transition: 'opacity 1.2s ease-out',
@@ -141,7 +175,7 @@ const About: React.FC = () => {
           }}
         ></div>
 
-        <div className="relative z-10 max-w-4xl px-6 mx-auto">
+        <div className="relative z-10 max-w-4xl px-6 mx-auto mt-8">
           <div className="space-y-6">
             {/* Subtitle with fade-in and slide-up */}
             <p 
@@ -225,7 +259,7 @@ const About: React.FC = () => {
             <div id="animate-image" className={`transition-all duration-1000 ease-out delay-200 ${isVisible['animate-image'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <div className="relative">
                 <img
-                  src="https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  src="./image/EeGhunQXgAMgaHS.jpg"
                   alt="Luxury hotel room"
                   className="w-full rounded-lg shadow-lg"
                 />
@@ -305,43 +339,89 @@ const About: React.FC = () => {
         </div>
       </section>
 
-      {/* Team Section */}
+      {/* Testimonials Section (Replaced Team Section) */}
       <section className="py-20" style={{backgroundColor: '#e3e3e9'}}>
         <div className="px-6 mx-auto max-w-7xl">
-          <div id="animate-team-header" className={`mb-16 text-center transition-all duration-1000 ${isVisible['animate-team-header'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div id="animate-testimonials-header" className={`mb-16 text-center transition-all duration-1000 ${isVisible['animate-testimonials-header'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             <h2 className="mb-6 text-3xl font-light md:text-4xl" style={{color: '#747293'}}>
-              Meet Our Team
+              What Our Guests Say
             </h2>
             <p className="max-w-2xl mx-auto text-lg font-light text-gray-600">
-              Passionate professionals dedicated to making your travel dreams come true
+              Hear from travelers who have experienced the PearlStay difference
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {teamMembers.map((member, index) => (
+          <div className="relative max-w-4xl mx-auto">
+            <div className="overflow-hidden">
               <div 
-                key={index}
-                id={`animate-team-${index}`}
-                className={`group text-center bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-500 ${isVisible[`animate-team-${index}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                style={{ transitionDelay: `${index * 100}ms` }}
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${currentTestimonial * 100}%)` }}
               >
-                <div className="relative overflow-hidden">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="object-cover w-full h-64 transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="mb-2 text-lg font-medium" style={{color: '#747293'}}>
-                    {member.name}
-                  </h3>
-                  <p className="text-sm font-light text-gray-600">
-                    {member.role}
-                  </p>
-                </div>
+                {testimonials.map((testimonial, index) => (
+                  <div 
+                    key={index}
+                    className="flex-shrink-0 w-full px-4"
+                    id={`animate-testimonial-${index}`}
+                  >
+                    <div className={`p-8 bg-white rounded-xl shadow-md transition-all duration-700 ${isVisible[`animate-testimonial-${index}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+                      <div className="flex items-center mb-6">
+                        <div className="flex mr-4">
+                          {[...Array(5)].map((_, i) => (
+                            <Star 
+                              key={i} 
+                              className={`w-5 h-5 ${i < testimonial.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                            />
+                          ))}
+                        </div>
+                        <Quote className="w-8 h-8 text-gray-300" />
+                      </div>
+                      <p className="mb-6 text-lg italic font-light text-gray-700">
+                        "{testimonial.content}"
+                      </p>
+                      <div className="flex items-center">
+                        <img 
+                          src={testimonial.image} 
+                          alt={testimonial.name}
+                          className="object-cover w-12 h-12 rounded-full"
+                        />
+                        <div className="ml-4">
+                          <h4 className="font-medium" style={{color: '#747293'}}>{testimonial.name}</h4>
+                          <p className="text-sm text-gray-600">{testimonial.role}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* Navigation buttons */}
+            <button 
+              onClick={prevTestimonial}
+              className="absolute left-0 p-2 transition-colors transform -translate-x-4 -translate-y-1/2 bg-white rounded-full shadow-md top-1/2 hover:bg-gray-100"
+              aria-label="Previous testimonial"
+            >
+              <ChevronLeft className="w-5 h-5" style={{color: '#747293'}} />
+            </button>
+            <button 
+              onClick={nextTestimonial}
+              className="absolute right-0 p-2 transition-colors transform translate-x-4 -translate-y-1/2 bg-white rounded-full shadow-md top-1/2 hover:bg-gray-100"
+              aria-label="Next testimonial"
+            >
+              <ChevronRight className="w-5 h-5" style={{color: '#747293'}} />
+            </button>
+
+            {/* Indicators */}
+            <div className="flex justify-center mt-8 space-x-2">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToTestimonial(index)}
+                  className={`w-3 h-3 rounded-full transition-colors ${index === currentTestimonial ? 'bg-gray-600' : 'bg-gray-300'}`}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -425,26 +505,41 @@ const About: React.FC = () => {
       {/* Contact Section */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl px-6 mx-auto text-center">
-          <div id="animate-cta" className={`transition-all duration-1000 ${isVisible['animate-cta'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <h2 className="mb-6 text-3xl font-light md:text-4xl" style={{color: '#747293'}}>
+          <div
+            id="animate-cta"
+            className={`transition-all duration-1000 ${
+              isVisible["animate-cta"]
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-8"
+            }`}
+          >
+            <h2
+              className="mb-6 text-3xl font-light md:text-4xl"
+              style={{ color: "#747293" }}
+            >
               Ready to Start Your Journey?
             </h2>
             <p className="max-w-2xl mx-auto mb-8 text-lg font-light text-gray-600">
-              Join thousands of satisfied travelers who trust PearlStay for their luxury accommodation needs
+              Join thousands of satisfied travelers who trust PearlStay for their
+              luxury accommodation needs
             </p>
+
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
-              <button 
+              <Link
+                to="/hotels"
                 className="px-8 py-3 font-medium text-white transition-all duration-300 rounded-md hover:opacity-90"
-                style={{backgroundColor: '#747293'}}
+                style={{ backgroundColor: "#747293" }}
               >
                 Book Your Stay Now
-              </button>
-              <button 
+              </Link>
+
+              <Link
+                to="/contact"
                 className="px-8 py-3 font-medium transition-all duration-300 border-2 rounded-md hover:bg-gray-50"
-                style={{borderColor: '#747293', color: '#747293'}}
+                style={{ borderColor: "#747293", color: "#747293" }}
               >
                 Contact Our Team
-              </button>
+              </Link>
             </div>
           </div>
         </div>
