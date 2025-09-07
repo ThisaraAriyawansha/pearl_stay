@@ -10,6 +10,7 @@ const Contact: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
   const [isVisible, setIsVisible] = useState<Record<string, boolean>>({});
   const [scrollY, setScrollY] = useState(0);
 
@@ -50,13 +51,34 @@ const Contact: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
+    setError('');
+    setSuccess(false);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send email');
+      }
+
       setLoading(false);
       setSuccess(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 1000);
+    } catch (err) {
+      setLoading(false);
+      setError('Failed to send your message. Please try again later.');
+    }
   };
 
   return (
@@ -232,6 +254,11 @@ const Contact: React.FC = () => {
                 {success && (
                   <div className="p-4 mb-6 text-green-800 bg-green-100 border border-green-200 rounded-md">
                     Thank you for your message! We'll get back to you within 24 hours.
+                  </div>
+                )}
+                {error && (
+                  <div className="p-4 mb-6 text-red-800 bg-red-100 border border-red-200 rounded-md">
+                    {error}
                   </div>
                 )}
 

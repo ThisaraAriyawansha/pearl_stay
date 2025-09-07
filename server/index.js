@@ -17,6 +17,7 @@ const AdminRoutesDash = require('./routes/adminManage');
 
 const RoomCardroute = require('./routes/roomcard');
 
+const EmailRoutes = require('./routes/email');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -50,6 +51,7 @@ app.use('/api/adminManage', AdminRoutesDash);
 
 app.use('/api/roomcard', RoomCardroute);
 
+app.use('/api/email', EmailRoutes);
 
 
 
