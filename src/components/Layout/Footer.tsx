@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
     <footer 
       className="text-white bg-fixed bg-center bg-cover bg-primary-800 min-h-[400px] sm:min-h-[450px] lg:min-h-[500px]"
       style={{ 
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(34, 34, 34, 0.7)), url('/image/sri-lanka-tangalle-beach-aerial-sj84qckd6uwxgwey.jpg')`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(34, 34, 34, 0.7)), url('/image/beach-wallpaper-3840x2160-sandy-shore-sunset-12590.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
