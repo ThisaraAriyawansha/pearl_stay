@@ -85,7 +85,7 @@ const Login: React.FC = () => {
 
       {/* Right Side - Form */}
       <div className="flex-1 flex items-center justify-center px-8 py-12 bg-[#e3e3e9]">
-        <div className="w-full max-w-md mt-8">
+        <div className="w-full max-w-md mt-16">
           {/* Mobile Logo */}
           <div className="mb-10 text-center lg:hidden">
             <div className="inline-flex items-center mb-4 space-x-2">
@@ -191,7 +191,7 @@ const Login: React.FC = () => {
             <p className="text-sm text-[#908ea9] mb-4">Don't have an account?</p>
             <Link
               to="/register"
-              className="inline-block w-full h-12 leading-12 text-center border border-[#c7c7d4] 
+              className="inline-block w-full h-12 leading-12 text-center border border-[#c7c7d4] p-2
                        text-[#747293] font-medium rounded-lg hover:bg-white hover:border-[#908ea9]
                        transition-all duration-200"
             >
