@@ -61,8 +61,11 @@ const Register: React.FC = () => {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <div className="flex items-center justify-center mb-4 space-x-2">
-            <Building2 className="w-12 h-12 text-primary-500" />
-            <span className="text-3xl font-bold text-primary-700">PearlStay</span>
+  <img 
+    src="/plogo-Picsart-AiImageEnhancer.png" 
+    alt="PearlStay Logo" 
+    className="object-contain w-12 h-12"
+  />            <span className="text-3xl font-bold text-primary-700">PearlStay</span>
           </div>
           <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>
           <p className="mt-2 text-sm text-gray-600">
