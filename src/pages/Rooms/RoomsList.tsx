@@ -147,7 +147,7 @@ const RoomsList: React.FC = () => {
         variants={headerVariants}
         className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] flex items-center justify-center text-center text-white bg-cover bg-center"
         style={{
-          backgroundImage: "url('/image/2024-10-08T06_56_55.422Z.png')",
+          backgroundImage: "url('/image/2024-10-08T06_56_55.422Z.jpg')",
           // Responsive background sizing
           backgroundSize: "cover",
           // Responsive positioning - focus on center for mobile, allow more flexibility for desktop
