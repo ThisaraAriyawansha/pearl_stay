@@ -1,15 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Detect mobile based on screen width
+
+  // Handle window resize to update isMobile state
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <footer 
-      className="text-white bg-fixed bg-center bg-cover bg-primary-800 min-h-[400px] sm:min-h-[450px] lg:min-h-[500px]"
-      style={{ 
+    <footer
+      className="text-white bg-primary-800 min-h-[400px] sm:min-h-[450px] lg:min-h-[500px]"
+      style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(34, 34, 34, 0.7)), url('/image/beach-wallpaper-3840x2160-sandy-shore-sunset-12590.jpg')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundSize: 'cover', // Ensure image covers the section
+        backgroundPosition: isMobile ? 'center 30%' : 'center center', // Adjust position for mobile
+        backgroundAttachment: isMobile ? 'scroll' : 'fixed', // Scroll for mobile, fixed for desktop
+        backgroundRepeat: 'no-repeat', // Prevent image tiling
       }}
     >
       <div className="px-4 py-16 mx-auto max-w-7xl sm:px-6 sm:py-20 lg:px-8 lg:py-24">
@@ -17,10 +31,10 @@ const Footer: React.FC = () => {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center mb-6 space-x-3">
-              <img 
-                src="/plogo-Picsart-AiImageEnhancer.png" 
-                alt="PearlStay Logo" 
-                className="object-contain w-12 h-12 sm:w-14 sm:h-14" 
+              <img
+                src="/plogo-Picsart-AiImageEnhancer.png"
+                alt="PearlStay Logo"
+                className="object-contain w-12 h-12 sm:w-14 sm:h-14"
               />
               <span className="text-2xl font-bold text-white sm:text-3xl">PearlStay</span>
             </div>
