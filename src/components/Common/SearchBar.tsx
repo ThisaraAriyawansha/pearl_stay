@@ -221,9 +221,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = '' }) => {
   </div>
 
   {/* Check-out Date */}
-  <div className="relative">
-    <label className="block mb-1 text-sm font-medium" style={{ color: '#e3e3e9' }}>Check-out</label>
-    <div className="relative">
+  <div className="relative w-full">
+    <label className="block w-full mb-1 text-sm font-medium" style={{ color: '#e3e3e9' }}>Check-out</label>
+    <div className="relative w-full">
       <input
         type="date"
         value={checkOut}
