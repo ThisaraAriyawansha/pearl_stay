@@ -79,7 +79,7 @@ const PearlStaySection = () => {
               console.error('Video failed to load');
             }}
           >
-            <source src="./video/videoplayback1080.mp4" type="video/mp4" />
+            <source src="./video/videoplayback1080Compress.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           
