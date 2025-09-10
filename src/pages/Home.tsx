@@ -53,7 +53,7 @@ const Home: React.FC = () => {
             <div className="absolute rounded-full w-36 h-36 opacity-18 top-1/2 right-1/3 circle-5"></div>
           </div>
           
-          <div className="relative z-10 max-w-4xl px-4 mx-auto mt-24 mb-2 text-center text-white sm:mb-24">
+          <div className="relative z-10 max-w-4xl mx-auto mt-24 mb-2 text-center text-white sm:mb-24">
             <div className="max-w-4xl mx-auto">
               <SearchBar onSearch={handleSearch} />
             </div>
