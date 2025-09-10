@@ -118,6 +118,26 @@ const RoomsList: React.FC = () => {
   const bedTypes = ['Single', 'Double', 'Queen', 'King', 'Twin'];
   const sizes = ['Small', 'Medium', 'Large', 'Suite'];
 
+
+      const [isMobile, setIsMobile] = useState(false);
+  
+    useEffect(() => {
+      // This code runs only on the client side
+      const handleResize = () => {
+        setIsMobile(window.innerWidth < 768);
+      };
+  
+      // Set initial value
+      handleResize();
+  
+      // Add event listener
+      window.addEventListener("resize", handleResize);
+  
+      // Clean up
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -128,7 +148,13 @@ const RoomsList: React.FC = () => {
         className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] flex items-center justify-center text-center text-white bg-cover bg-center"
         style={{
           backgroundImage: "url('/image/2024-10-08T06_56_55.422Z.png')",
-          backgroundAttachment: "fixed",
+          // Responsive background sizing
+          backgroundSize: "cover",
+          // Responsive positioning - focus on center for mobile, allow more flexibility for desktop
+          backgroundPosition: isMobile ? "center 30%" : "center center",
+          // Fix background image for desktop only
+          backgroundAttachment: isMobile ? "scroll" : "fixed",
+          backgroundRepeat: "no-repeat",
         }}
       >
         {/* Dark overlay */}

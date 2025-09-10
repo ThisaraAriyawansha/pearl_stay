@@ -7,6 +7,17 @@ const About: React.FC = () => {
   const [counters, setCounters] = useState({ hotels: 0, guests: 0, countries: 0 });
   const [scrollY, setScrollY] = useState(0);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Detect mobile based on screen width
+
+  // Handle window resize to update isMobile state
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -161,8 +172,9 @@ const About: React.FC = () => {
         className="relative w-full h-[400px] md:h-[500px] flex items-center justify-center text-center bg-cover bg-center overflow-hidden"
         style={{
           backgroundImage: `url('./image/pexels-eslames1-32398175.jpg')`,
-          backgroundAttachment: 'fixed',
-          backgroundPosition: `center ${scrollY * 0.5}px`
+          backgroundSize: 'cover', // Ensure image covers the section
+          backgroundPosition: isMobile ? 'center 30%' : `center ${scrollY * 0.5}px`, // Adjust position for mobile
+          backgroundAttachment: isMobile ? 'scroll' : 'fixed', // Scroll for mobile, fixed for desktop
         }}
       >
         {/* Animated overlay */}
