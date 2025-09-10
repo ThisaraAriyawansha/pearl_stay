@@ -40,18 +40,20 @@ const HeroSection = () => {
 
   return (
     <section 
-      className="relative flex items-center justify-center min-h-screen overflow-hidden bg-fixed bg-center bg-cover md:bg-[length:100%_auto] sm:bg-[length:120%_auto] bg-no-repeat"
+      className="relative flex items-center justify-center min-h-screen overflow-hidden bg-fixed bg-center bg-no-repeat bg-cover"
       style={{
         backgroundImage: `url('/image/beach-wallpaper-3840x2160-waves-tropical-6475.jpg')`,
+        backgroundSize: 'cover',
+        objectFit: 'cover',
       }}
       onMouseMove={handleMouseMove}
     >
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/50"></div>
-      <div className="absolute inset-0 bg-black/20"></div>
+      {/* Gradient overlay with reduced opacity for mobile visibility */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/40"></div>
+      <div className="absolute inset-0 bg-black/10"></div>
       
-      {/* Animated floating elements */}
-      <div className="absolute inset-0">
+      {/* Animated floating elements, hidden on mobile */}
+      <div className="absolute inset-0 hidden sm:block">
         <div 
           className="absolute w-64 h-64 transition-transform duration-700 ease-out rounded-full sm:w-80 sm:h-80 md:w-96 md:h-96 bg-gradient-to-br from-cyan-400/20 to-blue-400/20 blur-3xl"
           style={{
@@ -75,7 +77,7 @@ const HeroSection = () => {
         {/* Animated heading */}
         <div className="mb-6 overflow-hidden">
           <h1 
-            className={`text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-light text-white leading-tight transition-all duration-1000 ease-out ${
+            className={`text-2xl sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl font-light text-white leading-tight transition-all duration-1000 ease-out ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
             }`}
             style={{ 
@@ -93,9 +95,9 @@ const HeroSection = () => {
         </div>
 
         {/* Animated subtitle */}
-        <div className="mb-8 overflow-hidden sm:mb-12">
+        <div className="mb-8 overflow-hidden sm:mb-10">
           <p 
-            className={`text-sm sm:text-base md:text-xl lg:text-2xl text-gray-100 font-light max-w-2xl sm:max-w-3xl mx-auto leading-relaxed transition-all duration-1000 delay-300 ease-out ${
+            className={`text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-100 font-light max-w-xl sm:max-w-2xl lg:max-w-3xl mx-auto leading-relaxed transition-all duration-1000 delay-300 ease-out ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
             }`}
             style={{ 
