@@ -1,14 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const Banner = () => {
+
+
+    const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // This code runs only on the client side
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Clean up
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  
   return (
     <div
-      className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] flex items-center justify-center text-center text-white bg-cover bg-center"
+      className="relative flex items-center justify-center w-full text-center text-white bg-center bg-cover h-[200px] sm:h-[300px] md:h-[400px] lg:h-[500px]"
       style={{
         backgroundImage: "url('/image/matthew-hume-I9zW-9Qz7tU-unsplash.jpg')",
-        backgroundAttachment: "fixed",
+        // Responsive background sizing
+        backgroundSize: "cover",
+        // Responsive positioning - focus on center for mobile, allow more flexibility for desktop
+        backgroundPosition: isMobile ? "center 30%" : "center center",
+        // Fix background image for desktop only
+        backgroundAttachment: isMobile ? "scroll" : "fixed",
+        backgroundRepeat: "no-repeat",
       }}
     >
+      
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/60"></div>
       
