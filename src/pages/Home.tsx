@@ -42,7 +42,7 @@ const Home: React.FC = () => {
       <Hero/>
     <div className="pt-1 bg-white">
       
-        <section className="relative flex items-center justify-center mb-16 overflow-hidden bg-white">
+        <section className="relative flex items-center justify-center mb-8 overflow-hidden bg-white">
           
           {/* Add this animated circles background */}
           <div className="absolute inset-0 overflow-hidden">
@@ -53,7 +53,7 @@ const Home: React.FC = () => {
             <div className="absolute rounded-full w-36 h-36 opacity-18 top-1/2 right-1/3 circle-5"></div>
           </div>
           
-          <div className="relative z-10 max-w-4xl px-4 mx-auto mt-24 mb-24 text-center text-white sm:mb-24">
+          <div className="relative z-10 max-w-4xl px-4 mx-auto mt-24 mb-2 text-center text-white sm:mb-24">
             <div className="max-w-4xl mx-auto">
               <SearchBar onSearch={handleSearch} />
             </div>
@@ -138,7 +138,7 @@ const Home: React.FC = () => {
               <h2 className="mb-4 text-2xl font-light sm:text-3xl md:text-4xl lg:text-5xl">
                 Featured Hotels
               </h2>
-              <p className="mb-2 text-xs tracking-wide text-black uppercase sm:text-sm md:text-base md:mb-3">
+              <p className="mb-2 text-xs tracking-wide text-gray-500 uppercase sm:text-sm md:text-base md:mb-3">
                 Discover our handpicked selection of exceptional properties
               </p>
             </div>
