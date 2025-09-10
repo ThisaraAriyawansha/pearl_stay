@@ -201,45 +201,43 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, className = '' }) => {
           )}
         </div>
 
-        {/* Check-in Date */}
-        <div className="relative">
-          <label className="block mb-1 text-sm font-medium" style={{ color: '#e3e3e9' }}>Check-in</label>
-          <div className="relative">
-            <Calendar className="absolute w-4 h-4 left-3 top-3" style={{ color: '#c7c7d4' }} />
-            <input
-              type="date"
-              value={checkIn}
-              onChange={(e) => setCheckIn(e.target.value)}
-              min={today}
-              className="w-full pl-10 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:border-transparent [color-scheme:dark]"
-              style={{ 
-                backgroundColor: '#908ea9', 
-                borderColor: '#acaabe',
-                color: '#e3e3e9'
-              }}
-            />
-          </div>
-        </div>
+{/* Check-in Date */}
+  <div className="relative">
+    <label className="block mb-1 text-sm font-medium" style={{ color: '#e3e3e9' }}>Check-in</label>
+    <div className="relative">
+      <input
+        type="date"
+        value={checkIn}
+        onChange={(e) => setCheckIn(e.target.value)}
+        min={today}
+        className="w-full pl-3 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:border-transparent [color-scheme:dark]"
+        style={{ 
+          backgroundColor: '#908ea9', 
+          borderColor: '#acaabe',
+          color: '#e3e3e9'
+        }}
+      />
+    </div>
+  </div>
 
-        {/* Check-out Date */}
-        <div className="relative">
-          <label className="block mb-1 text-sm font-medium" style={{ color: '#e3e3e9' }}>Check-out</label>
-          <div className="relative">
-            <Calendar className="absolute w-4 h-4 left-3 top-3" style={{ color: '#c7c7d4' }} />
-            <input
-              type="date"
-              value={checkOut}
-              onChange={(e) => setCheckOut(e.target.value)}
-              min={checkIn || today}
-              className="w-full pl-10 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:border-transparent [color-scheme:dark]"
-              style={{ 
-                backgroundColor: '#908ea9', 
-                borderColor: '#acaabe',
-                color: '#e3e3e9'
-              }}
-            />
-          </div>
-        </div>
+  {/* Check-out Date */}
+  <div className="relative">
+    <label className="block mb-1 text-sm font-medium" style={{ color: '#e3e3e9' }}>Check-out</label>
+    <div className="relative">
+      <input
+        type="date"
+        value={checkOut}
+        onChange={(e) => setCheckOut(e.target.value)}
+        min={checkIn || today}
+        className="w-full pl-3 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:border-transparent [color-scheme:dark]"
+        style={{ 
+          backgroundColor: '#908ea9', 
+          borderColor: '#acaabe',
+          color: '#e3e3e9'
+        }}
+      />
+    </div>
+  </div>
 
 
 
