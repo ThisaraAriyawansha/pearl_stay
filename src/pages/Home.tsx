@@ -138,7 +138,7 @@ const Home: React.FC = () => {
               <h2 className="mb-4 text-2xl font-light sm:text-3xl md:text-4xl lg:text-5xl">
                 Featured Hotels
               </h2>
-              <p className="text-xl text-gray-600">
+              <p className="mb-2 text-xs tracking-wide text-black uppercase sm:text-sm md:text-base md:mb-3">
                 Discover our handpicked selection of exceptional properties
               </p>
             </div>
