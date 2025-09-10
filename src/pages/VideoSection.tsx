@@ -84,7 +84,7 @@ const PearlStaySection = () => {
           </video>
           
           {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black/40"></div>
+          <div className="absolute inset-0 bg-black/0"></div>
         </div>
         
         {/* Content */}
